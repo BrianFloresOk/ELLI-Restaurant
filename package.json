@@ -1,0 +1,13 @@
+{
+  "name": "pos-fivestars",
+  "private": true,
+  "workspaces": [
+    "domain",
+    "apps/backend"
+  ],
+  "scripts": {
+    "dev:backend": "yarn workspace backend dev",
+    "build:backend": "yarn workspace backend build",
+    "test:domain": "yarn workspace domain test"
+  }
+}
