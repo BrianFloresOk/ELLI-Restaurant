@@ -17,11 +17,19 @@ function validateOrderMetadata(input: CreateOrderInput): void {
     }
 }
 
-function createOrderItems( inputItems?: { product: Product; quantity: number }[] ): OrderItem[] {
+function createOrderItems(inputItems?: { product: Product; quantity: number }[]): OrderItem[] {
     return (
         inputItems?.map(({ product, quantity }) => {
             const unitPrice = product.price;
             const subtotal = unitPrice * quantity;
+
+            /* 
+                orderId: string;
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+    subtotal: number;
+            */
 
             return {
                 id: crypto.randomUUID(),
@@ -39,13 +47,14 @@ function calculateOrderTotal(items: OrderItem[]): number {
     return items.reduce((sum, item) => sum + item.subtotal, 0);
 }
 
-function createOrder(input: CreateOrderInput, total: number): Order {
+function createOrder(input: CreateOrderInput, total: number, items: OrderItem[]): Order {
     return {
         id: crypto.randomUUID(),
         tableId: input.tableId,
         waiterId: input.waiterId,
         status: "PENDING",
-        total,
+        items: items,
+        total
     };
 }
 
@@ -53,6 +62,6 @@ export function createOrderUseCase(input: CreateOrderInput): Order {
     validateOrderMetadata(input);
     const items = createOrderItems(input.items);
     const total = calculateOrderTotal(items);
-    const order: Order = createOrder(input, total);
+    const order: Order = createOrder(input, total, items);
     return order;
 }
