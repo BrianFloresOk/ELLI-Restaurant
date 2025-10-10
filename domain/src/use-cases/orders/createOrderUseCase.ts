@@ -22,15 +22,6 @@ function createOrderItems(inputItems?: { product: Product; quantity: number }[])
         inputItems?.map(({ product, quantity }) => {
             const unitPrice = product.price;
             const subtotal = unitPrice * quantity;
-
-            /* 
-                orderId: string;
-    productId: string;
-    quantity: number;
-    unitPrice: number;
-    subtotal: number;
-            */
-
             return {
                 id: crypto.randomUUID(),
                 orderId: "",
