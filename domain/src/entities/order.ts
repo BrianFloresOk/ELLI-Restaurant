@@ -6,5 +6,6 @@ export interface Order extends Entity {
     tableId: string
     waiterId: string
     cashierId?: string
-    status: OrderStatus
+    status: OrderStatus,
+    total: number
 }
