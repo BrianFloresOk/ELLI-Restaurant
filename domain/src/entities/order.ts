@@ -1,5 +1,6 @@
 import { Entity } from "../utils/types/Entity"
 import { OrderStatus } from "../utils/types/OrderStatus"
+import { OrderItem } from "./OrderItem"
 
 
 export interface Order extends Entity {
@@ -7,5 +8,6 @@ export interface Order extends Entity {
     waiterId: string
     cashierId?: string
     status: OrderStatus,
-    total: number
+    total: number,
+    items: OrderItem[]
 }
