@@ -1,6 +1,6 @@
 import { Entity } from "../utils/types/Entity"
-import { UserRole } from "../utils/types/userRol"
-import { UserStatus } from "../utils/types/userStatus"
+import { UserRole } from "../utils/types/UserRol"
+import { UserStatus } from "../utils/types/UserStatus"
 
 export interface User extends Entity {
     name: string
