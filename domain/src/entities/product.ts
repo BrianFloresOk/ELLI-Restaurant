@@ -8,5 +8,4 @@ export interface Product extends Entity{
     price: number
     type: ProductType
     categoryId: string
-    createdAt: Date
 }
