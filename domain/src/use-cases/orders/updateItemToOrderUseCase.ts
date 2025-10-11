@@ -21,10 +21,6 @@ export function updateItemQuantityUseCase(input: UpdateItemQuantityInput): Order
     item.quantity = newQuantity;
     order.total = calculateOrderTotal(order.items);
 
-    // Si la cantidad es 0, podríamos decidir eliminar el ítem automáticamente.
-    // Esto depende de las reglas de negocio del restaurante.
-    // Si querés, más adelante podemos incluir esa lógica.
-
     return order;
 }
 
