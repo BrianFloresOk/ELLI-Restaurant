@@ -1,1 +1,1 @@
-export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'OPEN' | 'CLOSED'
+export type OrderStatus = 'CANCELLED' | 'OPEN' | 'CLOSED'

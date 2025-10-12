@@ -29,6 +29,7 @@ function createOrderItems(inputItems?: { product: Product; quantity: number }[])
                 quantity,
                 unitPrice,
                 subtotal,
+                status: "PENDING"
             } as OrderItem;
         }) || []
     );
@@ -43,7 +44,7 @@ function createOrder(input: CreateOrderInput, total: number, items: OrderItem[])
         id: crypto.randomUUID(),
         tableId: input.tableId,
         waiterId: input.waiterId,
-        status: "PENDING",
+        status: "OPEN",
         items: items,
         total
     };

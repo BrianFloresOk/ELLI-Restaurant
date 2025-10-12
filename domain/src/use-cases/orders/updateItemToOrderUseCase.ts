@@ -29,7 +29,7 @@ function validateInput(order: Order, productId: string, newQuantity: number): vo
     if (!productId) throw new Error("El ID del producto es requerido.");
     if (newQuantity <= 0) throw new Error("La cantidad debe ser mayor que cero.");
 
-    const validStatuses = ["PENDING", "IN_PROGRESS"];
+    const validStatuses = ["OPEN"];
     if (!validStatuses.includes(order.status)) {
         throw new Error(`No se puede modificar un pedido con estado ${order.status}.`);
     }

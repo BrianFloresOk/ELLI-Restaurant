@@ -7,11 +7,11 @@ describe("updateItemQuantityUseCase", () => {
         id: "order-1",
         tableId: "mesa-1",
         waiterId: "waiter-1",
-        status: "IN_PROGRESS",
+        status: "OPEN",
         total: 3000,
         items: [
-            { id: "item-1", orderId: "order-1", productId: "p1", quantity: 1, unitPrice: 1000, subtotal: 1000 },
-            { id: "item-2", orderId: "order-1", productId: "p2", quantity: 2, unitPrice: 1000, subtotal: 2000 },
+            { id: "item-1", orderId: "order-1", productId: "p1", quantity: 1, unitPrice: 1000, subtotal: 1000, status: "PENDING" },
+            { id: "item-2", orderId: "order-1", productId: "p2", quantity: 2, unitPrice: 1000, subtotal: 2000, status: "PENDING" },
         ],
     };
 

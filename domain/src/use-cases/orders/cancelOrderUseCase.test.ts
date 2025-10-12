@@ -8,7 +8,7 @@ describe("cancelOrderUseCase", () => {
             id: "1",
             tableId: "3",
             waiterId: "w1",
-            status: "PENDING",
+            status: "OPEN",
             items: [],
             total: 0,
         };
@@ -25,7 +25,7 @@ describe("cancelOrderUseCase", () => {
             waiterId: "w1",
             items: [],
             total: 0,
-            status: "COMPLETED"
+            status: "CLOSED"
         };
 
         expect(() =>

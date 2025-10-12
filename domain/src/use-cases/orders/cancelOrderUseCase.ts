@@ -16,7 +16,7 @@ export function cancelOrderUseCase(input: CancelOrderInput): Order {
         throw new Error("El usuario que cancela el pedido es requerido.");
     }
 
-    if (!["PENDING", "IN_PROGRESS"].includes(order.status)) {
+    if (!["OPEN"].includes(order.status)) {
         throw new Error("Solo se pueden cancelar pedidos pendientes o en progreso.");
     }
 

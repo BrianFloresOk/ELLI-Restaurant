@@ -7,12 +7,12 @@ describe("closeOrderUseCase (dominio puro)", () => {
         id: "1",
         tableId: "T1",
         waiterId: "W1",
-        status: "COMPLETED",
+        status: "OPEN",
         total: 100,
         items: []
     };
 
-    it("Cierra correctamente una orden en estado COMPLETED", () => {
+    it("Cierra correctamente una orden en estado OPEN", () => {
         const result = closeOrderUseCase(baseOrder);
         expect(result.status).toBe("CLOSED");
     });
@@ -27,8 +27,4 @@ describe("closeOrderUseCase (dominio puro)", () => {
         expect(() => closeOrderUseCase(cancelledOrder)).toThrow("No se puede cerrar una orden cancelada.");
     });
 
-    it("Lanza error si la orden no está en estado COMPLETED", () => {
-        const pendingOrder : Order = { ...baseOrder, status: "PENDING" };
-        expect(() => closeOrderUseCase(pendingOrder)).toThrow("Solo se pueden cerrar órdenes marcadas como COMPLETED.");
-    });
 });

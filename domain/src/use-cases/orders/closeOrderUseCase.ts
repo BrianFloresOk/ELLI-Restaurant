@@ -23,9 +23,5 @@ function checkStatusOrder(order: Order) {
     if (order.status === "CANCELLED") {
         throw new Error("No se puede cerrar una orden cancelada.");
     }
-
-    if (order.status !== "COMPLETED") {
-        throw new Error("Solo se pueden cerrar órdenes marcadas como COMPLETED.");
-    }
 }
 

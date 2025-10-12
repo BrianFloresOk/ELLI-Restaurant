@@ -1,6 +1,6 @@
 import { Order } from "../../entities/Order";
 import { OrderItem } from "../../entities/OrderItem";
-
+import { ItemOrderStatus } from "../../utils/types/ItemOrderStatus";
 
 interface RemoveItemFromOrderInput {
     order: Order;
@@ -18,12 +18,15 @@ export function removeItemFromOrderUseCase(input: RemoveItemFromOrderInput): Ord
         throw new Error(`El producto con ID ${productId} no existe en el pedido.`);
     }
 
+    const itemToRemove = order.items[itemIndex];
+    const REMOVABLE_STATUS: ItemOrderStatus = 'PENDING';
+
+    if (itemToRemove.status !== REMOVABLE_STATUS) {
+        throw new Error(`No se puede eliminar el producto. Su estado actual es ${itemToRemove.status}. Solo se pueden eliminar artículos en estado ${REMOVABLE_STATUS}.`);
+    }
+
     order.items.splice(itemIndex, 1);
     order.total = calculateOrderTotal(order.items);
-
-    if (order.items.length === 0 && order.status === "IN_PROGRESS") {
-        order.status = "PENDING";
-    }
 
     return order;
 }
@@ -32,7 +35,7 @@ function validateInput(order: Order, productId: string): void {
     if (!order) throw new Error("El pedido es requerido.");
     if (!productId) throw new Error("El ID del producto es requerido.");
 
-    const validStatuses = ["PENDING", "IN_PROGRESS"];
+    const validStatuses = ["OPEN"];
     if (!validStatuses.includes(order.status)) {
         throw new Error(`No se puede modificar un pedido con estado ${order.status}.`);
     }

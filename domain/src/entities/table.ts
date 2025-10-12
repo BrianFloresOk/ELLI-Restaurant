@@ -1,8 +1,8 @@
 import { Entity } from "../utils/types/Entity"
 
 export interface Table extends Entity {
-    number: number
-    capacity: number
-    isAvailable: boolean
-    assignedWaiterId?: string 
+    name: string; // Ej: "Mesa 5", "Barra 1"
+    capacity: number;
+    status: 'AVAILABLE' | 'OCCUPIED' | 'NEEDS_CLEANING';
+    assignedWaiterId?: string
 }

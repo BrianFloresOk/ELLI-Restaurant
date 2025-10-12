@@ -10,8 +10,7 @@ export function sendOrderToKitchenUseCase(input: SendOrderToKitchenInput): Order
     validateWaiter(waiterId);
     validateOrder(order, waiterId);
 
-    order.status = "IN_PROGRESS";
-
+    order.status = "OPEN";
     return order;
 
 }
@@ -25,8 +24,8 @@ function validateOrder(order: Order, waiterId: string) {
         throw new Error("Este mozo no tiene permisos para enviar este pedido.");
     }
 
-    if (order.status !== "PENDING") {
-        throw new Error(`Solo se pueden enviar a cocina pedidos pendientes.`);
+    if (order.status !== "OPEN") {
+        throw new Error(`Solo se pueden enviar a cocina pedidos que esten abiertos.`);
     }
 
     if (!order.items || order.items.length === 0) {

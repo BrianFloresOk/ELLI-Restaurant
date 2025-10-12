@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Product } from "../../entities/Product";
 import { createOrderUseCase } from "./createOrderUseCase";
 import { addItemToOrderUseCase } from "./addItemToOrderUseCase";
+import { Order } from "../../entities/Order";
 
 
 describe("addItemToOrderUseCase", () => {
@@ -22,10 +23,16 @@ describe("addItemToOrderUseCase", () => {
     };
 
     it("agrega un producto nuevo a la orden", () => {
-        const order = createOrderUseCase({
+        const order: Order = createOrderUseCase({
             tableId: "mesa-1",
             waiterId: "waiter-1",
-            items: [{ product: mockProduct1, quantity: 1 }],
+            items: [{
+                product: mockProduct1,
+                quantity: 1
+            }, {
+                product: mockProduct2,
+                quantity: 2
+            }],
         });
 
         const updatedOrder = addItemToOrderUseCase({
@@ -35,8 +42,8 @@ describe("addItemToOrderUseCase", () => {
         });
 
         expect(updatedOrder.items).toHaveLength(2);
-        expect(updatedOrder.total).toBe(2000 + 3 * 800);
-        expect(updatedOrder.status).toBe("IN_PROGRESS");
+        expect(updatedOrder.total).toBe(3600 + 3 * 800);
+        expect(updatedOrder.status).toBe("OPEN");
     });
 
     it("incrementa la cantidad si el producto ya está en la orden", () => {
@@ -69,15 +76,15 @@ describe("addItemToOrderUseCase", () => {
     });
 
     it("no permite modificar pedidos cerrados", () => {
-        const order = createOrderUseCase({
+        const order2 = createOrderUseCase({
             tableId: "mesa-1",
             waiterId: "waiter-1",
             items: [{ product: mockProduct1, quantity: 1 }],
         });
-        order.status = "COMPLETED";
+        order2.status = "CLOSED"
 
         expect(() =>
-            addItemToOrderUseCase({ order, product: mockProduct2, quantity: 1 })
+            addItemToOrderUseCase({ order: order2, product: mockProduct2, quantity: 1 })
         ).toThrow(/No se puede modificar un pedido/);
     });
 });

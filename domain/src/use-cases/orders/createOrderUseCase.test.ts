@@ -16,7 +16,7 @@ describe("createOrderUseCase", () => {
         expect(order).toHaveProperty("id");
         expect(order.tableId).toBe("T-1");
         expect(order.waiterId).toBe("W-123");
-        expect(order.status).toBe("PENDING");
+        expect(order.status).toBe("OPEN");
         expect(order.total).toBe(0);
     });
 
@@ -31,7 +31,7 @@ describe("createOrderUseCase", () => {
         });
 
         expect(order.total).toBe(2500 * 2 + 1200);
-        expect(order.status).toBe("PENDING");
+        expect(order.status).toBe("OPEN");
     });
 
     it("lanza error si falta el ID de mesa", () => {
