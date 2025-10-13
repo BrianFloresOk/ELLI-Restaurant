@@ -1,1 +1,1 @@
-export type OrderStatus = 'CANCELLED' | 'OPEN' | 'CLOSED'
+export type OrderStatus = 'CANCELLED' | 'OPEN' | 'CLOSED' | "IS_PAID"
