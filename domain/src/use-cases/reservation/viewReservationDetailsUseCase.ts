@@ -1,28 +1,30 @@
-import { Reservation } from "../../entities/Reservation"
+import { Reservation } from "../../entities/Reservation";
+import { ReservationService } from "../../services/reservation/ReservationService";
 
-interface ViewReservationDetailsInput {
-    reservationId: string
-    reservations: Reservation[]
+interface Dependencies {
+    reservationService: ReservationService;
 }
 
-export function viewReservationDetailsUseCase(
-    input: ViewReservationDetailsInput
-): Reservation {
-    const { reservationId, reservations } = input
+interface ViewReservationDetailsInput {
+    dependencies: Dependencies;
+    reservationId: string;
+}
+
+export async function viewReservationDetailsUseCase({
+    dependencies,
+    reservationId,
+}: ViewReservationDetailsInput): Promise<Reservation> {
+    const { reservationService } = dependencies;
 
     if (!reservationId) {
-        throw new Error("El ID de la reserva es requerido.")
+        throw new Error("El ID de la reserva es requerido.");
     }
 
-    if (!Array.isArray(reservations) || reservations.length === 0) {
-        throw new Error("No hay reservas disponibles para consultar.")
-    }
-
-    const reservation = reservations.find(r => r.id === reservationId)
+    const reservation = await reservationService.findById(reservationId);
 
     if (!reservation) {
-        throw new Error("Reserva no encontrada.")
+        throw new Error("Reserva no encontrada.");
     }
 
-    return reservation
+    return reservation;
 }

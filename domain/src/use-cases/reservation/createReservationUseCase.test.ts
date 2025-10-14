@@ -1,54 +1,84 @@
-import { describe, it, expect} from "vitest"
+// domain/src/use-cases/reservations/__tests__/createReservationUseCase.spec.ts
+import { describe, it, expect, vi } from "vitest";
 import { createReservationUseCase } from "./createReservationUseCase";
-import { Table } from "../../entities/Table";
+import { ReservationService } from "../../services/reservation/ReservationService";
 
 describe("createReservationUseCase", () => {
-    const mockTable: Table = { id: "1", capacity: 4, status: "AVAILABLE"};
-    const mockUser = {
-        customerName: "Juan",
-        customerEmail: "juan@mail.com",
-    }
+    const mockReservationService: ReservationService = {
+        save: vi.fn(async (reservation) => {
+            return Promise.resolve();
+        }),
+        findById: vi.fn(),
+        findAll: vi.fn(),
+        update: vi.fn(),
+        listByDate: vi.fn(),
+        assignTable: vi.fn(),
+        findByDateRange: vi.fn()
+    };
 
-    it("crea una reserva válida para una fecha futura", () => {
-        const futureDate = new Date(Date.now() + 3600 * 1000); // 1h después
-        const reservation = createReservationUseCase({
-            customerName: mockUser.customerName,
-            customerEmail: mockUser.customerEmail,
-            date: futureDate,
-            peopleCount: 2,
-            table: mockTable
+    it("crea una reserva correctamente", async () => {
+        const reservationDate = new Date();
+        reservationDate.setDate(reservationDate.getDate() + 1);
+
+        const reservation = await createReservationUseCase({
+            dependencies: { reservationService: mockReservationService },
+            payload: {
+                customerName: "Juan Pérez",
+                customerEmail: "juan@example.com",
+                date: reservationDate,
+                peopleCount: 3,
+            },
         });
 
+        expect(reservation).toHaveProperty("id");
+        expect(reservation.customerName).toBe("Juan Pérez");
+        expect(reservation.customerEmail).toBe("juan@example.com");
+        expect(reservation.people).toBe(3);
         expect(reservation.status).toBe("PENDING");
-        expect(reservation.customerName).toEqual(mockUser.customerName);
-        expect(reservation.tableId).toEqual(mockTable.id);
-        expect(reservation.people).toBe(2);
+        expect(mockReservationService.save).toHaveBeenCalledWith(reservation);
     });
 
-    it("lanza error si la fecha es pasada", () => {
-        const pastDate = new Date(Date.now() - 3600 * 1000);
-        expect(() =>
+    it("lanza error si el nombre del cliente no existe", async () => {
+        await expect(
             createReservationUseCase({
-                customerName: mockUser.customerName,
-                customerEmail: mockUser.customerEmail,
-                date: pastDate,
-                peopleCount: 2
+                dependencies: { reservationService: mockReservationService },
+                payload: {
+                    customerName: "",
+                    customerEmail: "test@example.com",
+                    date: new Date(Date.now() + 1000 * 60 * 60),
+                    peopleCount: 2,
+                },
             })
-        ).toThrow("La fecha de la reserva debe ser futura.");
+        ).rejects.toThrow("El cliente es requerido.");
     });
 
-    it("lanza error si la mesa no tiene capacidad suficiente", () => {
-        const futureDate = new Date(Date.now() + 3600 * 1000);
-        const smallTable: Table = { id: "t2", capacity: 2, status: "AVAILABLE"};
-
-        expect(() =>
+    it("lanza error si la fecha es pasada", async () => {
+        const pastDate = new Date(Date.now() - 1000 * 60 * 60);
+        await expect(
             createReservationUseCase({
-                customerName: mockUser.customerName,
-                customerEmail: mockUser.customerEmail,
-                date: futureDate,
-                peopleCount: 4,
-                table: smallTable
+                dependencies: { reservationService: mockReservationService },
+                payload: {
+                    customerName: "Test",
+                    customerEmail: "test@example.com",
+                    date: pastDate,
+                    peopleCount: 2,
+                },
             })
-        ).toThrow("La mesa no tiene suficiente capacidad para la cantidad de personas.");
+        ).rejects.toThrow("La fecha de la reserva debe ser futura.");
+    });
+
+    it("lanza error si la cantidad de personas es inválida", async () => {
+        const futureDate = new Date(Date.now() + 1000 * 60 * 60);
+        await expect(
+            createReservationUseCase({
+                dependencies: { reservationService: mockReservationService },
+                payload: {
+                    customerName: "Test",
+                    customerEmail: "test@example.com",
+                    date: futureDate,
+                    peopleCount: 0,
+                },
+            })
+        ).rejects.toThrow("La cantidad de personas debe ser mayor a cero.");
     });
 });

@@ -19,7 +19,8 @@ describe("cancelOrderUseCase", () => {
         update: vi.fn(),
         delete: vi.fn(),
         list: vi.fn(),
-        findByStatus: vi.fn()
+        findByStatus: vi.fn(),
+        findByTableId: vi.fn()
     };
 
     it("cancela un pedido correctamente", async () => {
@@ -57,7 +58,8 @@ describe("cancelOrderUseCase", () => {
             update: vi.fn(),
             delete: vi.fn(),
             list: vi.fn(),
-            findByStatus: vi.fn()
+            findByStatus: vi.fn(),
+            findByTableId: vi.fn()
         };
 
         await expect(

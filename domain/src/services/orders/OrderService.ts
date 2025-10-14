@@ -7,4 +7,5 @@ export interface OrderService {
     delete(id: string): Promise<void>
     list(): Promise<Order[]>
     findByStatus(status: string): Promise<Order[]>
+    findByTableId(tableId: string): Promise<Order>
 }

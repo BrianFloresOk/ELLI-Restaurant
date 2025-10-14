@@ -28,7 +28,8 @@ describe("addItemToOrderUseCase (con dependencias)", () => {
         save: vi.fn(),
         delete: vi.fn(),
         list: vi.fn(),
-        findByStatus: vi.fn()
+        findByStatus: vi.fn(),
+        findByTableId: vi.fn()
     };
 
     it("agrega un producto nuevo a la orden y persiste los cambios", async () => {

@@ -1,18 +1,37 @@
 import { Reservation } from "../../entities/Reservation";
+import { ReservationService } from "../../services/reservation/ReservationService";
 
-interface CancelReservationInput {
-    reservation: Reservation;
+interface Dependencies {
+    reservationService: ReservationService;
 }
 
-export function cancelReservationUseCase(input: CancelReservationInput): Reservation {
-    const { reservation } = input;
+interface CancelReservationInput {
+    dependencies: Dependencies;
+    payload: {
+        reservationId: string;
+    };
+}
 
+export async function cancelReservationUseCase({
+    dependencies,
+    payload,
+}: CancelReservationInput): Promise<Reservation> {
+    const { reservationService } = dependencies;
+    const { reservationId } = payload;
+
+    if (!reservationId) {
+        throw new Error("El ID de la reserva es requerido.");
+    }
+
+    const reservation = await reservationService.findById(reservationId);
     if (!reservation) {
-        throw new Error("La reserva es requerida.");
+        throw new Error("Reserva no encontrada.");
     }
 
     if (["CANCELLED", "COMPLETED", "EXPIRED"].includes(reservation.status)) {
-        throw new Error(`No se puede cancelar una reserva con estado ${reservation.status}.`);
+        throw new Error(
+            `No se puede cancelar una reserva con estado ${reservation.status}.`
+        );
     }
 
     if (reservation.date <= new Date()) {
@@ -20,6 +39,8 @@ export function cancelReservationUseCase(input: CancelReservationInput): Reserva
     }
 
     reservation.status = "CANCELLED";
+
+    await reservationService.update(reservationId, reservation);
 
     return reservation;
 }

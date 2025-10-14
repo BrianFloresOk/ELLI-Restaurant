@@ -1,20 +1,25 @@
 import { Reservation } from "../../entities/Reservation";
+import { ReservationService } from "../../services/reservation/ReservationService";
 
-interface ListReservationsInput {
-    reservations: Reservation[];
+interface Dependencies {
+    reservationService: ReservationService;
+}
+
+interface ListReservationsByDateInput {
+    dependencies: Dependencies;
     date: Date;
     status?: Reservation["status"];
 }
 
-export function listReservationsByDateUseCase(input: ListReservationsInput): Reservation[] {
-    const { reservations, date, status } = input;
+export async function listReservationsByDateUseCase({
+    dependencies,
+    date,
+    status,
+}: ListReservationsByDateInput): Promise<Reservation[]> {
+    const { reservationService } = dependencies;
 
-    if (!Array.isArray(reservations)) {
-        throw new Error("La lista de reservas es requerida.");
-    }
-
-    if (!date) {
-        throw new Error("La fecha es requerida.");
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+        throw new Error("La fecha proporcionada no es válida.");
     }
 
     const startOfDay = new Date(date);
@@ -23,13 +28,13 @@ export function listReservationsByDateUseCase(input: ListReservationsInput): Res
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    let filtered = reservations.filter(
-        (r) => r.date >= startOfDay && r.date <= endOfDay
-    );
+    const reservations = await reservationService.findByDateRange(startOfDay, endOfDay);
 
-    if (status) {
-        filtered = filtered.filter((r) => r.status === status);
+    if (!reservations || reservations.length === 0) {
+        throw new Error("No hay reservas disponibles para la fecha indicada.");
     }
 
-    return filtered;
+    return status
+        ? reservations.filter((r) => r.status === status)
+        : reservations;
 }

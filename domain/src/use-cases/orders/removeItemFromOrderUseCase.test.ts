@@ -10,7 +10,8 @@ describe("removeItemFromOrderUseCase", () => {
         update: vi.fn(),
         delete: vi.fn(),
         list: vi.fn(),
-        findByStatus: vi.fn()
+        findByStatus: vi.fn(),
+        findByTableId: vi.fn()
     };
 
     const baseOrder: Order = {

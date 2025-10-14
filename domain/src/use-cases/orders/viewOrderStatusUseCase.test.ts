@@ -23,7 +23,8 @@ describe("viewOrderStatusUseCase", () => {
             update: vi.fn(),
             delete: vi.fn(),
             list: vi.fn(),
-            findByStatus: vi.fn()
+            findByStatus: vi.fn(),
+            findByTableId: vi.fn()
         };
 
         const result = await viewOrderStatusUseCase({
@@ -43,7 +44,8 @@ describe("viewOrderStatusUseCase", () => {
             update: vi.fn(),
             delete: vi.fn(),
             list: vi.fn(),
-            findByStatus: vi.fn()
+            findByStatus: vi.fn(),
+            findByTableId: vi.fn()
         };
         // @ts-expect-error intencional para test
         expect(() => viewOrderStatusUseCase({ dependencies: { orderService: mockOrderService }, orderId: null })).toThrow("La orden es requerida.");
@@ -57,7 +59,8 @@ describe("viewOrderStatusUseCase", () => {
             update: vi.fn(),
             delete: vi.fn(),
             list: vi.fn(),
-            findByStatus: vi.fn()
+            findByStatus: vi.fn(),
+            findByTableId: vi.fn()
         };
 
         const result = await viewOrderStatusUseCase({

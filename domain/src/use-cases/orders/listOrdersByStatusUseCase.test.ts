@@ -19,7 +19,8 @@ describe("listOrdersByStatusUseCase", () => {
             list: vi.fn(),
             findByStatus: vi.fn().mockResolvedValue(
                 mockOrders.filter(o => o.status === "OPEN")
-            )
+            ),
+            findByTableId: vi.fn()
         };
 
         const result = await listOrdersByStatusUseCase({
@@ -38,7 +39,8 @@ describe("listOrdersByStatusUseCase", () => {
             update: vi.fn(),
             delete: vi.fn(),
             list: vi.fn(),
-            findByStatus: vi.fn().mockResolvedValue([])
+            findByStatus: vi.fn().mockResolvedValue([]),
+            findByTableId: vi.fn()
         };
 
         await expect(

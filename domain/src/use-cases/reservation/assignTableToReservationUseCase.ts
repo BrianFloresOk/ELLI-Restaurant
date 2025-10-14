@@ -1,24 +1,41 @@
 import { Reservation } from "../../entities/Reservation";
 import { Table } from "../../entities/Table";
+import { ReservationService } from "../../services/reservation/ReservationService";
+import { TableService } from "../../services/table/TableService";
 
-interface AssignTableInput {
-    reservation: Reservation;
-    table: Table;
+interface Dependencies {
+    reservationService: ReservationService;
+    tableService: TableService;
 }
 
-export function assignTableToReservationUseCase(input: AssignTableInput): Reservation {
-    const { reservation, table } = input;
+interface AssignTableInput {
+    dependencies: Dependencies;
+    payload: {
+        reservationId: string;
+        tableId: string;
+    };
+}
 
-    if (!reservation) {
-        throw new Error("La reserva es requerida.");
-    }
+export async function assignTableToReservationUseCase({
+    dependencies,
+    payload,
+}: AssignTableInput): Promise<Reservation> {
+    const { reservationService, tableService } = dependencies;
+    const { reservationId, tableId } = payload;
 
-    if (!table) {
-        throw new Error("La mesa es requerida.");
-    }
+    if (!reservationId) throw new Error("La reserva es requerida.");
+    if (!tableId) throw new Error("La mesa es requerida.");
 
-    if (reservation.status === "CANCELLED" || reservation.status === "COMPLETED") {
-        throw new Error("No se puede asignar una mesa a una reserva cancelada o completada.");
+    const reservation = await reservationService.findById(reservationId);
+    if (!reservation) throw new Error("Reserva no encontrada.");
+
+    const table = await tableService.findById(tableId);
+    if (!table) throw new Error("Mesa no encontrada.");
+
+    if (["CANCELLED", "COMPLETED"].includes(reservation.status)) {
+        throw new Error(
+            "No se puede asignar una mesa a una reserva cancelada o completada."
+        );
     }
 
     if (reservation.tableId) {
@@ -29,14 +46,12 @@ export function assignTableToReservationUseCase(input: AssignTableInput): Reserv
         throw new Error("La mesa no está disponible.");
     }
 
-    // Asignar mesa y actualizar estados
-    const updatedReservation: Reservation = {
-        ...reservation,
-        tableId: table.id,
-        status: "CONFIRMED",
-    };
-
+    reservation.tableId = table.id;
+    reservation.status = "CONFIRMED";
     table.status = "OCCUPIED";
 
-    return updatedReservation;
+    await reservationService.update(reservationId, reservation);
+    await tableService.update(tableId, table);
+
+    return reservation;
 }

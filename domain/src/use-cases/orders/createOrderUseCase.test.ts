@@ -26,6 +26,8 @@ describe("createOrderUseCase", () => {
         update: vi.fn(),
         delete: vi.fn(),
         list: vi.fn(),
+        findByStatus: vi.fn(),
+        findByTableId: vi.fn()
     };
 
     it("crea un pedido vacío correctamente", async () => {
