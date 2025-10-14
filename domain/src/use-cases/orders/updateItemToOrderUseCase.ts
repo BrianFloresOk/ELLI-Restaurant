@@ -1,19 +1,23 @@
 import { Order } from "../../entities/Order";
 import { OrderItem } from "../../entities/OrderItem";
+import { OrderService } from "../../services/orders/OrderService";
 
 interface UpdateItemQuantityInput {
-    order: Order;
-    productId: string;
-    newQuantity: number;
+    dependencies: { orderService: OrderService };
+    payload: {
+        order: Order;
+        productId: string;
+        newQuantity: number;
+    };
 }
 
-export function updateItemQuantityUseCase(input: UpdateItemQuantityInput): Order {
-    const { order, productId, newQuantity } = input;
+export function updateItemToOrderUseCase({ dependencies, payload }: UpdateItemQuantityInput): Order {
+    const { orderService } = dependencies;
+    const { order, productId, newQuantity } = payload;
 
     validateInput(order, productId, newQuantity);
 
     const item = findItem(order.items, productId);
-
     if (!item) {
         throw new Error(`El producto con ID ${productId} no existe en la orden.`);
     }
@@ -38,7 +42,6 @@ function validateInput(order: Order, productId: string, newQuantity: number): vo
 function findItem(items: OrderItem[], productId: string): OrderItem | undefined {
     return items.find((item) => item.productId === productId);
 }
-
 function calculateOrderTotal(items: OrderItem[]): number {
     return items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }

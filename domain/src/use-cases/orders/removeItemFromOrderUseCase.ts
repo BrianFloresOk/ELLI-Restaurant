@@ -1,14 +1,19 @@
 import { Order } from "../../entities/Order";
 import { OrderItem } from "../../entities/OrderItem";
+import { OrderService } from "../../services/orders/OrderService";
 import { ItemOrderStatus } from "../../utils/types/ItemOrderStatus";
 
 interface RemoveItemFromOrderInput {
-    order: Order;
-    productId: string;
+    dependencies: { orderService: OrderService },
+    payload: {
+        order: Order;
+        productId: string;
+    }
 }
 
-export function removeItemFromOrderUseCase(input: RemoveItemFromOrderInput): Order {
-    const { order, productId } = input;
+export async function removeItemFromOrderUseCase({ dependencies, payload }: RemoveItemFromOrderInput): Promise<Order> {
+    const { orderService } = dependencies;
+    const { order, productId } = payload;
 
     validateInput(order, productId);
 
@@ -26,7 +31,10 @@ export function removeItemFromOrderUseCase(input: RemoveItemFromOrderInput): Ord
     }
 
     order.items.splice(itemIndex, 1);
+
     order.total = calculateOrderTotal(order.items);
+
+    await orderService.update(order.id, order);
 
     return order;
 }

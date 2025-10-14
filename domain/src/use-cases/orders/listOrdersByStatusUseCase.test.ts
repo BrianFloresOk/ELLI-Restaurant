@@ -1,53 +1,51 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { listOrdersByStatusUseCase } from "./listOrdersByStatusUseCase";
 import { Order } from "../../entities/Order";
+import { OrderService } from "../../services/orders/OrderService";
 
 describe("listOrdersByStatusUseCase", () => {
-    it("debería filtrar los pedidos por estado", () => {
+    const mockOrders: Order[] = [
+        { id: "1", tableId: "T1", waiterId: "W1", status: "OPEN", total: 1000, items: [] },
+        { id: "2", tableId: "T2", waiterId: "W2", status: "CLOSED", total: 2000, items: [] },
+        { id: "3", tableId: "T3", waiterId: "W3", status: "OPEN", total: 1500, items: [] },
+    ];
 
-        const mockProduct1 = {
-            id: "p2",
-            name: "Empanada de carne",
-            price: 800,
-            type: "DISH",
-            categoryId: "2"
-        }
+    it("devuelve solo los pedidos con el estado solicitado", async () => {
+        const mockOrderService: OrderService = {
+            findById: vi.fn(),
+            save: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            list: vi.fn(),
+            findByStatus: vi.fn().mockResolvedValue(
+                mockOrders.filter(o => o.status === "OPEN")
+            )
+        };
 
-
-        const orders: Order[] = [
-            {
-                id: "1",
-                tableId: "5",
-                waiterId: "w1",
-                status: "OPEN",
-                items: [{ id: "1", orderId: "1", productId: mockProduct1.id, quantity: 2, unitPrice: mockProduct1.price, subtotal: mockProduct1.price * 2, status: "PENDING"}],
-                total: 300
-            }, {
-                id: "2",
-                tableId: "5",
-                waiterId: "w1",
-                status: "CLOSED",
-                items: [{ id: "1", orderId: "1", productId: mockProduct1.id, quantity: 2, unitPrice: mockProduct1.price, subtotal: mockProduct1.price * 2, status: "PENDING" }],
-                total: 300,
-            }, {
-                id: "3",
-                tableId: "6",
-                waiterId: "w1",
-                status: "OPEN",
-                items: [{ id: "1", orderId: "1", productId: mockProduct1.id, quantity: 2, unitPrice: mockProduct1.price, subtotal: mockProduct1.price * 2, status: "PENDING" }],
-                total: 300,
-            }
-        ];
-        
-        const result = listOrdersByStatusUseCase({ orders, status: "OPEN" });
+        const result = await listOrdersByStatusUseCase({
+            dependencies: { orderService: mockOrderService },
+            status: "OPEN"
+        });
 
         expect(result).toHaveLength(2);
-        expect(result.every((o) => o.status === "OPEN")).toBe(true);
+        expect(result.every(o => o.status === "OPEN")).toBe(true);
     });
 
-    it("debería lanzar error si no hay pedidos", () => {
-        expect(() =>
-            listOrdersByStatusUseCase({ orders: [], status: "CLOSED" })
-        ).toThrow("No hay pedidos disponibles.");
+    it("lanza error si no hay pedidos con ese estado", async () => {
+        const mockOrderService: OrderService = {
+            findById: vi.fn(),
+            save: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            list: vi.fn(),
+            findByStatus: vi.fn().mockResolvedValue([])
+        };
+
+        await expect(
+            listOrdersByStatusUseCase({
+                dependencies: { orderService: mockOrderService },
+                status: "CLOSED"
+            })
+        ).rejects.toThrow('No hay pedidos con el estado "CLOSED".');
     });
 });

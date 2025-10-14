@@ -1,18 +1,47 @@
 import { Order } from "../../entities/Order";
 import { Product } from "../../entities/Product";
 import { OrderItem } from "../../entities/OrderItem";
+import { OrderService } from "../../services/orders/OrderService";
 
-interface CreateOrderInput {
+interface Payload {
     tableId: string;
     waiterId: string;
     items?: { product: Product; quantity: number }[];
 }
 
-function validateOrderMetadata(input: CreateOrderInput): void {
-    if (!input.tableId) {
+interface CreateOrderInput {
+    dependencies: { orderService: OrderService };
+    payload: Payload;
+}
+
+export async function createOrderUseCase({
+    dependencies,
+    payload,
+}: CreateOrderInput): Promise<Order> {
+    const { orderService } = dependencies;
+
+    validateOrderMetadata(payload);
+    const items = createOrderItems(payload.items);
+    const total = calculateOrderTotal(items);
+
+    const order: Order = {
+        id: crypto.randomUUID(),
+        tableId: payload.tableId,
+        waiterId: payload.waiterId,
+        status: "OPEN",
+        items,
+        total,
+    };
+    await orderService.save(order);
+
+    return order;
+}
+
+function validateOrderMetadata(payload: Payload): void {
+    if (!payload.tableId) {
         throw new Error("Table ID is required");
     }
-    if (!input.waiterId) {
+    if (!payload.waiterId) {
         throw new Error("Waiter ID is required");
     }
 }
@@ -29,7 +58,7 @@ function createOrderItems(inputItems?: { product: Product; quantity: number }[])
                 quantity,
                 unitPrice,
                 subtotal,
-                status: "PENDING"
+                status: "PENDING",
             } as OrderItem;
         }) || []
     );
@@ -37,23 +66,4 @@ function createOrderItems(inputItems?: { product: Product; quantity: number }[])
 
 function calculateOrderTotal(items: OrderItem[]): number {
     return items.reduce((sum, item) => sum + item.subtotal, 0);
-}
-
-function createOrder(input: CreateOrderInput, total: number, items: OrderItem[]): Order {
-    return {
-        id: crypto.randomUUID(),
-        tableId: input.tableId,
-        waiterId: input.waiterId,
-        status: "OPEN",
-        items: items,
-        total
-    };
-}
-
-export function createOrderUseCase(input: CreateOrderInput): Order {
-    validateOrderMetadata(input);
-    const items = createOrderItems(input.items);
-    const total = calculateOrderTotal(items);
-    const order: Order = createOrder(input, total, items);
-    return order;
 }

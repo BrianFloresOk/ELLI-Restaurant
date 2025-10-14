@@ -1,62 +1,71 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { viewOrderStatusUseCase } from "../../use-cases/orders/viewOrderStatusUseCase";
 import { Order } from "../../entities/Order";
+import { OrderService } from "../../services/orders/OrderService";
 
 describe("viewOrderStatusUseCase", () => {
-    it("debería devolver el estado y los ítems de una orden válida", () => {
-        const order: Order = {
-            id: "order-1",
-            tableId: "table-5",
-            waiterId: "waiter-1",
-            status: "OPEN",
-            total: 250,
-            items: [
-                {
-                    id: "item-1",
-                    orderId: "order-1",
-                    productId: "product-1",
-                    quantity: 2,
-                    unitPrice: 100,
-                    subtotal: 200,
-                    status: "IN_PROGRESS"
-                },
-                {
-                    id: "item-2",
-                    orderId: "order-1",
-                    productId: "product-2",
-                    quantity: 1,
-                    unitPrice: 50,
-                    subtotal: 50,
-                    status: "PENDING"
-                }
+    const mockOrders: Order[] = [
+        {
+            id: "1", tableId: "T1", waiterId: "W1", status: "OPEN", total: 1000, items: [
+                { id: "item-1", orderId: "1", productId: "p1", quantity: 1, unitPrice: 500, subtotal: 500, status: "PENDING" },
             ]
+        },
+        { id: "2", tableId: "T2", waiterId: "W2", status: "CLOSED", total: 2000, items: [] },
+        { id: "3", tableId: "T3", waiterId: "W3", status: "OPEN", total: 1500, items: [] },
+    ];
+
+
+
+    it("debería devolver el estado y los ítems de una orden válida", async () => {
+        const mockOrderService: OrderService = {
+            findById: vi.fn().mockResolvedValue(mockOrders.find(o => o.id === "1")),
+            save: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            list: vi.fn(),
+            findByStatus: vi.fn()
         };
 
-        const result = viewOrderStatusUseCase({ order });
+        const result = await viewOrderStatusUseCase({
+            dependencies: { orderService: mockOrderService },
+            orderId: "1"
+        });
 
-        expect(result.status).toBe("OPEN");
-        expect(result.items.length).toBe(2);
-        expect(result.total).toBe(250);
+        expect(result?.id).toBe("1");
+        expect(result?.items.length).toBe(1);
+        expect(result?.total).toBe(1000);
     });
 
     it("debería lanzar error si la orden es nula", () => {
+        const mockOrderService: OrderService = {
+            findById: vi.fn().mockResolvedValue(mockOrders.find(o => o.id === "1")),
+            save: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            list: vi.fn(),
+            findByStatus: vi.fn()
+        };
         // @ts-expect-error intencional para test
-        expect(() => viewOrderStatusUseCase({ order: null })).toThrow("La orden es requerida.");
+        expect(() => viewOrderStatusUseCase({ dependencies: { orderService: mockOrderService }, orderId: null })).toThrow("La orden es requerida.");
     });
 
-    it("debería manejar una orden sin ítems", () => {
-        const order: Order = {
-            id: "order-2",
-            tableId: "table-3",
-            waiterId: "waiter-2",
-            status: "OPEN",
-            total: 0,
-            items: []
+    it("debería manejar una orden sin ítems", async () => {
+
+        const mockOrderService: OrderService = {
+            findById: vi.fn().mockResolvedValue(mockOrders.find(o => o.id === "3")),
+            save: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            list: vi.fn(),
+            findByStatus: vi.fn()
         };
 
-        const result = viewOrderStatusUseCase({ order });
+        const result = await viewOrderStatusUseCase({
+            dependencies: { orderService: mockOrderService },
+            orderId: "3"
+        });
 
-        expect(result.items.length).toBe(0);
-        expect(result.status).toBe("OPEN");
+        expect(result?.items.length).toBe(0);
+        expect(result?.status).toBe("OPEN");
     });
 });

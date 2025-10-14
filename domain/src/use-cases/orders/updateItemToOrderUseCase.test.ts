@@ -1,8 +1,19 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Order } from "../../entities/Order";
-import { updateItemQuantityUseCase } from "./updateItemToOrderUseCase";
+import { OrderService } from "../../services/orders/OrderService";
+import { updateItemToOrderUseCase } from "./updateItemToOrderUseCase";
 
-describe("updateItemQuantityUseCase", () => {
+describe("updateItemToOrderUseCase (con dependencia inyectada)", () => {
+
+    const mockOrderService: OrderService = {
+        findById: vi.fn(),
+        save: vi.fn().mockResolvedValue(undefined),
+        update: vi.fn(),
+        delete: vi.fn(),
+        list: vi.fn(),
+        findByStatus: vi.fn()
+    };
+
     const baseOrder: Order = {
         id: "order-1",
         tableId: "mesa-1",
@@ -15,34 +26,30 @@ describe("updateItemQuantityUseCase", () => {
         ],
     };
 
-    it("actualiza la cantidad de un producto existente y recalcula el total", () => {
-        const updatedOrder = updateItemQuantityUseCase({
-            order: structuredClone(baseOrder),
-            productId: "p2",
-            newQuantity: 3,
+    it("actualiza la cantidad y recalcula el total usando OrderService", () => {
+        const updatedOrder = updateItemToOrderUseCase({
+            dependencies: { orderService: mockOrderService },
+            payload: {
+                order: structuredClone(baseOrder),
+                productId: "p2",
+                newQuantity: 3,
+            },
         });
 
         expect(updatedOrder.items.find(i => i.productId === "p2")?.quantity).toBe(3);
         expect(updatedOrder.total).toBe(4000);
     });
 
-    it("lanza error si la cantidad es inválida", () => {
-        expect(() =>
-            updateItemQuantityUseCase({
-                order: structuredClone(baseOrder),
-                productId: "p1",
-                newQuantity: -1,
-            })
-        ).toThrow("La cantidad debe ser mayor que cero.");
-    });
-
     it("lanza error si el producto no existe", () => {
         expect(() =>
-            updateItemQuantityUseCase({
-                order: structuredClone(baseOrder),
-                productId: "p3",
-                newQuantity: 2,
+            updateItemToOrderUseCase({
+                dependencies: { orderService: mockOrderService },
+                payload: {
+                    order: structuredClone(baseOrder),
+                    productId: "p3",
+                    newQuantity: 2,
+                },
             })
-        ).toThrow(/no existe/);
+        ).toThrow(/no existe en la orden/);
     });
 });

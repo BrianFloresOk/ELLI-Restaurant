@@ -1,14 +1,23 @@
 import { Order } from "../../entities/Order";
+import { OrderService } from "../../services/orders/OrderService";
 
+
+interface Dependencies {
+    orderService: OrderService
+}
 interface CancelOrderInput {
-    order: Order;
-    userId: string;
+    dependencies: Dependencies
+    payload: {
+        orderId: string;
+        userId: string;
+    }
 }
 
-export function cancelOrderUseCase(input: CancelOrderInput): Order {
-    const { order, userId } = input;
+export async function cancelOrderUseCase({ dependencies, payload }: CancelOrderInput): Promise<Order> {
+    const { orderId, userId } = payload;
+    const { orderService } = dependencies;
 
-    if (!order) {
+    if (!orderId) {
         throw new Error("El pedido es requerido.");
     }
 
@@ -16,11 +25,14 @@ export function cancelOrderUseCase(input: CancelOrderInput): Order {
         throw new Error("El usuario que cancela el pedido es requerido.");
     }
 
-    if (!["OPEN"].includes(order.status)) {
-        throw new Error("Solo se pueden cancelar pedidos pendientes o en progreso.");
+    const order = await orderService.findById(orderId);
+    if(!order) {
+        throw new Error("No se encontró el pedido")
     }
-
+    
     order.status = "CANCELLED";
+
+    orderService.update(orderId, order)
 
     return order;
 }

@@ -1,39 +1,20 @@
 import { Order } from "../../entities/Order";
+import { OrderService } from "../../services/orders/OrderService";
 
-interface ViewOrderStatusInput {
-    order: Order;
+interface Dependencies {
+    orderService: OrderService
+}
+interface ViewOrderInput {
+    dependencies: Dependencies,
+    orderId: string,
 }
 
-interface ViewOrderStatusOutput {
-    orderId: string;
-    tableId: string;
-    status: Order["status"];
-    total: number;
-    items: {
-        productId: string;
-        quantity: number;
-        status: string;
-        subtotal: number;
-    }[];
-}
+export function viewOrderStatusUseCase({ dependencies, orderId }: ViewOrderInput): Promise<Order | null> {
+    const { orderService } = dependencies
 
-export function viewOrderStatusUseCase(input: ViewOrderStatusInput): ViewOrderStatusOutput {
-    const { order } = input;
-
-    if (!order) {
+    if (!orderId) {
         throw new Error("La orden es requerida.");
     }
 
-    return {
-        orderId: order.id,
-        tableId: order.tableId,
-        status: order.status,
-        total: order.total,
-        items: order.items?.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            status: item.status,
-            subtotal: item.subtotal
-        })) || []
-    };
+    return orderService.findById(orderId)
 }
