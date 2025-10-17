@@ -1,7 +1,7 @@
 import { Order } from "../../entities/Order";
 interface SendOrderToKitchenInput {
     order: Order;
-    waiterId: string;
+    waiterId: number;
 }
 
 export function sendOrderToKitchenUseCase(input: SendOrderToKitchenInput): Order {
@@ -15,7 +15,7 @@ export function sendOrderToKitchenUseCase(input: SendOrderToKitchenInput): Order
 
 }
 
-function validateOrder(order: Order, waiterId: string) {
+function validateOrder(order: Order, waiterId: number) {
     if (!order) {
         throw new Error("El pedido es requerido.");
     }
@@ -27,13 +27,9 @@ function validateOrder(order: Order, waiterId: string) {
     if (order.status !== "OPEN") {
         throw new Error(`Solo se pueden enviar a cocina pedidos que esten abiertos.`);
     }
-
-    if (!order.items || order.items.length === 0) {
-        throw new Error("No se puede enviar un pedido vacío a cocina.");
-    }
 }
 
-function validateWaiter(waiterId: string) : void {
+function validateWaiter(waiterId: number) : void {
     if (!waiterId) {
         throw new Error("El mozo es requerido para enviar el pedido a cocina.");
     }

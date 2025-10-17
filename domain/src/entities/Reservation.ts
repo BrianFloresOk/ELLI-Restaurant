@@ -2,7 +2,7 @@ import { Entity } from "../utils/types/Entity"
 import { ReservationStatus } from "../utils/types/ReservationStatus"
 
 export interface Reservation extends Entity {
-    tableId?: string
+    tableId?: number
     customerName: string
     customerPhone?: string
     customerEmail: string

@@ -9,11 +9,11 @@ describe("Register Payment Use Case", () => {
 
         const order: Order = {
             id: "12",
-            waiterId: "1",
-            tableId: "3",
+            waiterId: 1,
+            tableId: 3,
             status: "OPEN",
             total: 200,
-            items: []
+            orderDate: dateMock,
         }
 
         const input = {

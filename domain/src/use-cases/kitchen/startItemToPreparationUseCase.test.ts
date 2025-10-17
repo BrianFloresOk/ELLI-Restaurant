@@ -7,13 +7,13 @@ import { startItemPreparationUseCase } from "./startItemToPreparationUseCase";
 
 describe("startItemPreparationUseCase", () => {
     const BASE_ITEMS: OrderItem[] = [
-        { id: "item-1", orderId: "order-1", productId: "p1", quantity: 1, unitPrice: 10, subtotal: 10, status: "PENDING" as ItemOrderStatus },
-        { id: "item-2", orderId: "order-1", productId: "p2", quantity: 2, unitPrice: 5, subtotal: 10, status: "IN_PROGRESS" as ItemOrderStatus },
-        { id: "item-3", orderId: "order-1", productId: "p3", quantity: 3, unitPrice: 3, subtotal: 9, status: "COMPLETED" as ItemOrderStatus },
+        { id: "item-1", orderId: 1, productId: "p1", quantity: 1, unitPrice: 10, subtotal: 10, status: "PENDING" as ItemOrderStatus },
+        { id: "item-2", orderId: 1, productId: "p2", quantity: 2, unitPrice: 5, subtotal: 10, status: "IN_PROGRESS" as ItemOrderStatus },
+        { id: "item-3", orderId: 1, productId: "p3", quantity: 3, unitPrice: 3, subtotal: 9, status: "COMPLETED" as ItemOrderStatus },
     ];
 
     const BASE_ORDER: Order = {
-        id: "order-1",
+        id: 1,
         tableId: "mesa-1",
         waiterId: "waiter-1",
         status: "OPEN",

@@ -2,39 +2,45 @@ import { Order } from "../../entities/Order";
 import { Product } from "../../entities/Product";
 import { OrderItem } from "../../entities/OrderItem";
 import { OrderService } from "../../services/orders/OrderService";
+import { OrderWithItems } from "domain/src/utils/types/OrderWithItems";
 
 interface Payload {
     tableId: string;
     waiterId: string;
+    status: string;
     items?: { product: Product; quantity: number }[];
 }
-
 interface CreateOrderInput {
     dependencies: { orderService: OrderService };
     payload: Payload;
 }
 
+
 export async function createOrderUseCase({
     dependencies,
     payload,
-}: CreateOrderInput): Promise<Order> {
+}: CreateOrderInput): Promise<OrderWithItems> {
     const { orderService } = dependencies;
 
     validateOrderMetadata(payload);
-    const items = createOrderItems(payload.items);
-    const total = calculateOrderTotal(items);
 
     const order: Order = {
         id: crypto.randomUUID(),
         tableId: payload.tableId,
         waiterId: payload.waiterId,
         status: "OPEN",
-        items,
-        total,
+        orderDate: new Date(),
     };
     await orderService.save(order);
 
-    return order;
+    const items: OrderItem[] = createOrderItems(payload.items);
+    for (const item of items) {
+        item.orderId = order.id;
+    }
+
+    const orderWithItems: OrderWithItems = { ...order, items };
+
+    return orderWithItems;
 }
 
 function validateOrderMetadata(payload: Payload): void {
@@ -62,8 +68,4 @@ function createOrderItems(inputItems?: { product: Product; quantity: number }[])
             } as OrderItem;
         }) || []
     );
-}
-
-function calculateOrderTotal(items: OrderItem[]): number {
-    return items.reduce((sum, item) => sum + item.subtotal, 0);
 }

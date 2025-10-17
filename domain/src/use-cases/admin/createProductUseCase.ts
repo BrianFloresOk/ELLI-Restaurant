@@ -1,13 +1,5 @@
-/* export interface Product extends Entity {
-    name: string
-    description?: string
-    price: number
-    type: ProductType
-    categoryId: string
-}
- */
-
 import { Product } from "../../entities/Product"
+import { ProductService } from "../../services/product/ProductService"
 import { ProductType } from "../../utils/types/ProductType"
 
 interface Payload {
@@ -15,10 +7,18 @@ interface Payload {
     description?: string
     price: number
     type: ProductType
-    categoryId: string
+    categoryId: number
+}
+interface Dependencies {
+    productService: ProductService
 }
 
-export const createProductUseCase = (payload: Payload) => {
+interface CreateProductInput {
+    dependencies: Dependencies
+    payload: Payload
+}
+
+export const createProductUseCase = ({ dependencies, payload }: CreateProductInput): Product => {
     const newProduct: Product = {
         id: crypto.randomUUID(),
         name: payload.name,
@@ -28,5 +28,6 @@ export const createProductUseCase = (payload: Payload) => {
         categoryId: payload.categoryId
     }
 
+    dependencies.productService.save(newProduct)
     return newProduct;
 }

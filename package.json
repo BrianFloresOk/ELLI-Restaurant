@@ -1,9 +1,9 @@
 {
-  "name": "pos-fivestars",
+  "name": "resto-elli",
   "private": true,
   "workspaces": [
     "domain",
-    "apps/backend"
+    "apps/*"
   ],
   "scripts": {
     "dev:backend": "yarn workspace backend dev",

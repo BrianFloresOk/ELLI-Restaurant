@@ -31,15 +31,10 @@ export function registerPaymentUseCase(input: RegisterPaymentInput): Order {
         throw new Error("El cajero es requerido para registrar el pago.");
     }
 
-    // Calcular total ya pagado
-    const totalPagado = order.items?.reduce((sum, p) => sum + p.subtotal, 0) ?? 0;
-
-    const nuevoTotalPagado = totalPagado + amount;
-
     // Crear el pago
     const payment: Payment = {
         id: crypto.randomUUID(),
-        orderId: order.id,
+        orderId: Number(order.id),
         method,
         amount,
         paidAt: new Date()
@@ -50,11 +45,6 @@ export function registerPaymentUseCase(input: RegisterPaymentInput): Order {
         ...order,
         status: "CLOSED"
     };
-
-    // Si el total pagado cubre o supera el total → cerrar orden
-    if (nuevoTotalPagado >= order.total) {
-        updatedOrder.status = "CLOSED";
-    }
 
     return updatedOrder;
 }

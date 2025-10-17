@@ -8,4 +8,5 @@ export interface OrderItem extends Entity {
     unitPrice: number;
     subtotal: number;
     status: ItemOrderStatus
+    notes?: string;
 }

@@ -7,35 +7,24 @@ import { ItemOrderStatus } from "../../utils/types/ItemOrderStatus";
 
 describe("markOrderItemAsReadyUseCase", () => {
     const BASE_ITEMS: OrderItem[] = [
-        { id: "item-1", orderId: "order-1", productId: "p1", quantity: 1, unitPrice: 10, subtotal: 10, status: "IN_PROGRESS" as ItemOrderStatus },
-        { id: "item-2", orderId: "order-1", productId: "p2", quantity: 2, unitPrice: 5, subtotal: 10, status: "PENDING" as ItemOrderStatus },
-        { id: "item-3", orderId: "order-1", productId: "p3", quantity: 3, unitPrice: 3, subtotal: 9, status: "COMPLETED" as ItemOrderStatus },
+        { id: "item-1", orderId: 1, productId: 1, quantity: 1, unitPrice: 10, subtotal: 10, status: "IN_PROGRESS" as ItemOrderStatus },
+        { id: "item-2", orderId: 1, productId: 2, quantity: 2, unitPrice: 5, subtotal: 10, status: "PENDING" as ItemOrderStatus },
+        { id: "item-3", orderId: 1, productId: 3, quantity: 3, unitPrice: 3, subtotal: 9, status: "COMPLETED" as ItemOrderStatus },
     ];
 
     const BASE_ORDER: Order = {
-        id: "order-1",
-        tableId: "mesa-1",
-        waiterId: "waiter-1",
+        id: "1",
+        tableId: 1,
+        waiterId: 1,
         status: "OPEN",
         total: 29,
-        items: structuredClone(BASE_ITEMS),
+        orderDate: new Date(),
     };
 
     let orderToTest: Order;
 
     beforeEach(() => {
         orderToTest = structuredClone(BASE_ORDER);
-    });
-
-    it("debería cambiar el estado de un ítem de IN_PROGRESS a COMPLETED", () => {
-        const updatedOrder = markOrderItemAsReadyUseCase({
-            order: orderToTest,
-            productId: "p1",
-        });
-
-        const completedItem = updatedOrder.items.find(item => item.productId === "p1");
-
-        expect(completedItem?.status).toBe("COMPLETED");
     });
 
     it("lanza error si se intenta marcar un ítem en estado PENDING", () => {

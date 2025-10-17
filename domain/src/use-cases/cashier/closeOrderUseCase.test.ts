@@ -5,11 +5,11 @@ import { describe, expect, it } from "vitest";
 describe("closeOrderUseCase (dominio puro)", () => {
     const baseOrder: Order = {
         id: "1",
-        tableId: "T1",
-        waiterId: "W1",
+        tableId: 1,
+        waiterId: 1,
         status: "OPEN",
         total: 100,
-        items: []
+        orderDate: new Date(),
     };
 
     it("Cierra correctamente una orden en estado OPEN", () => {

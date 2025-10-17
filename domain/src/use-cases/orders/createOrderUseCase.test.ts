@@ -21,13 +21,18 @@ describe("createOrderUseCase", () => {
     };
 
     const mockOrderService: OrderService = {
-        findById: vi.fn(),
         save: vi.fn().mockResolvedValue(undefined),
+        findById: vi.fn(),
+        list: vi.fn(),
         update: vi.fn(),
         delete: vi.fn(),
-        list: vi.fn(),
+        closeOrder: vi.fn(),
         findByStatus: vi.fn(),
-        findByTableId: vi.fn()
+        findByTableId: vi.fn(),
+        addItem: vi.fn(),
+        updateItem: vi.fn(),
+        removeItem: vi.fn(),
+        listItems: vi.fn(),
     };
 
     it("crea un pedido vacío correctamente", async () => {
@@ -36,6 +41,7 @@ describe("createOrderUseCase", () => {
             payload: {
                 tableId: "T-1",
                 waiterId: "W-123",
+                status: "OPEN",
             },
         });
 
@@ -43,7 +49,6 @@ describe("createOrderUseCase", () => {
         expect(order.tableId).toBe("T-1");
         expect(order.waiterId).toBe("W-123");
         expect(order.status).toBe("OPEN");
-        expect(order.total).toBe(0);
         expect(mockOrderService.save).toHaveBeenCalledTimes(1);
     });
 
@@ -57,10 +62,14 @@ describe("createOrderUseCase", () => {
                     { product: productA, quantity: 2 },
                     { product: productB, quantity: 1 },
                 ],
+                status: "OPEN",
             },
         });
 
-        expect(order.total).toBe(2500 * 2 + 1200);
+        console.log(order);
+        expect(order).toHaveProperty("id");
+        expect(order.tableId).toBe("T-2");
+        expect(order.waiterId).toBe("W-001");
         expect(order.status).toBe("OPEN");
         expect(order.items).toHaveLength(2);
         expect(mockOrderService.save).toHaveBeenCalledTimes(2); // dos llamadas en total

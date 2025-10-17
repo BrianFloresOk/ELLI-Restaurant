@@ -1,10 +1,9 @@
-import { Order } from "../../entities/Order";
 import { Product } from "../../entities/Product";
 import { OrderItem } from "../../entities/OrderItem";
 import { OrderService } from "../../services/orders/OrderService";
 
 interface Payload {
-    order: Order;
+    orderId: string;
     product: Product;
     quantity: number;
 }
@@ -14,52 +13,50 @@ interface AddItemInput {
     payload: Payload;
 }
 
-export async function addItemToOrderUseCase({ dependencies, payload }: AddItemInput): Promise<Order> {
+export async function addItemToOrderUseCase({
+    dependencies,
+    payload,
+}: AddItemInput): Promise<void> {
     const { orderService } = dependencies;
-    const { order, product, quantity } = payload;
+    const { orderId, product, quantity } = payload;
 
-    validateInput(order, product, quantity);
+    if (!product?.id) throw new Error("Producto inválido.");
+    if (quantity <= 0) throw new Error("La cantidad debe ser mayor a cero.");
 
-    const existingItem = findExistingItem(order, product.id);
+    const order = await findOrder(orderService, orderId);
+    const existingItem = await findItemInOrder(orderService, orderId, product);
 
     if (existingItem) {
-        increaseItemQuantity(existingItem, quantity);
-        updateSubtotal(existingItem);
+        const updatedItem = updateQuantityAndTotalOfOrderItem(existingItem, quantity);
+
+        await orderService.updateItem({
+            orderId: order.id,
+            itemId: existingItem.id,
+            data: updatedItem,
+        });
     } else {
-        const newItem = createOrderItem(order.id, product, quantity);
-        order.items.push(newItem);
-    }
-
-    order.total = calculateOrderTotal(order.items);
-    await orderService.update(order.id, order);
-
-    return order;
-}
-
-function validateInput(order: Order, product: Product, quantity: number): void {
-    if (!order) throw new Error("El pedido es requerido.");
-    if (!product?.id) throw new Error("El producto es inválido.");
-    if (quantity <= 0) throw new Error("La cantidad debe ser mayor que cero.");
-
-    const validStatuses = ["OPEN"];
-    if (!validStatuses.includes(order.status)) {
-        throw new Error(`No se puede modificar un pedido con estado ${order.status}.`);
+        const newItem: OrderItem = createOrderItem(payload);
+        await orderService.addItem(orderId, newItem);
     }
 }
 
-function findExistingItem(order: Order, productId: string): OrderItem | undefined {
-    return order.items?.find((item) => item.productId === productId);
+async function findItemInOrder(orderService: OrderService, orderId: string, product: Product) {
+    const items = await orderService.listItems(orderId);
+
+    const existingItem = items.find(i => i.productId === product.id);
+    return existingItem;
 }
 
-function increaseItemQuantity(item: OrderItem, quantity: number): void {
-    item.quantity += quantity;
+function updateQuantityAndTotalOfOrderItem(existingItem: OrderItem, quantity: number) {
+    return {
+        ...existingItem,
+        quantity: existingItem.quantity + quantity,
+        subtotal: (existingItem.quantity + quantity) * existingItem.unitPrice,
+    };
 }
 
-function updateSubtotal(item: OrderItem): void {
-    item.subtotal = item.quantity * item.unitPrice;
-}
-
-function createOrderItem(orderId: string, product: Product, quantity: number): OrderItem {
+function createOrderItem(payload: Payload): OrderItem {
+    const { orderId, product, quantity } = payload;
     return {
         id: crypto.randomUUID(),
         orderId,
@@ -67,10 +64,14 @@ function createOrderItem(orderId: string, product: Product, quantity: number): O
         quantity,
         unitPrice: product.price,
         subtotal: product.price * quantity,
-        status: "PENDING"
+        status: "PENDING",
     };
 }
 
-function calculateOrderTotal(items: OrderItem[]): number {
-    return items.reduce((sum, item) => sum + item.subtotal, 0);
+async function findOrder(orderService: OrderService, orderId: string) {
+    const order = await orderService.findById(orderId);
+    if (!order) throw new Error("Pedido no encontrado.");
+    if (order.status !== "OPEN")
+        throw new Error(`No se puede modificar un pedido con estado ${order.status}.`);
+    return order;
 }

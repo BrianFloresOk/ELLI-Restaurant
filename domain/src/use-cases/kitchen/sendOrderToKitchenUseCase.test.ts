@@ -7,23 +7,23 @@ describe("sendOrderToKitchenUseCase", () => {
     test("debería enviar un pedido pendiente a cocina", () => {
         const order : Order = {
             id: "1",
-            tableId: "10",
-            waiterId: "w1",
-            items: [{ id: "i1", productId: "p1", quantity: 2, unitPrice: 100, subtotal: 200, orderId: "1", status: "PENDING"}],
+            tableId: 10,
+            waiterId: 1,
             status: "OPEN",
             total: 200,
+            orderDate: new Date(),
         };
 
-        const result = sendOrderToKitchenUseCase({ order, waiterId: "w1" });
+        const result = sendOrderToKitchenUseCase({ order, waiterId: 1 });
 
         expect(result.status).toBe("OPEN");
     });
 
     test("debería lanzar error si el pedido no está pendiente", () => {
-        const order : Order = { id: "1", tableId: "10", waiterId: "w1", items: [], status: "CLOSED", total: 0 };
+        const order : Order = { id: "1", tableId: 10, waiterId: 1, status: "CLOSED", total: 0, orderDate: new Date() };
 
         expect(() =>
-            sendOrderToKitchenUseCase({ order, waiterId: "w1" })
+            sendOrderToKitchenUseCase({ order, waiterId: 1 })
         ).toThrow("Solo se pueden enviar a cocina pedidos que esten abiertos.");
     });
 });

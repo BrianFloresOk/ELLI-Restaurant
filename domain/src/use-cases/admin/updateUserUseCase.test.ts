@@ -8,7 +8,7 @@ const baseUser: User = {
     email: "juan@example.com",
     password: "123456",
     role: "WAITER",
-    isActive: "ACTIVE",
+    isActive: true,
     createdAt: new Date()
 }
 
