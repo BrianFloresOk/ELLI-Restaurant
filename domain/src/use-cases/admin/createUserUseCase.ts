@@ -1,7 +1,7 @@
-import { User } from "../../entities/User"
+import { User } from "domain/src/entities"
 import { UserService } from "../../services/users/UserService"
 import { PasswordHasher } from "../../utils/types/PasswordHasher"
-import { UserRole } from "../../utils/types/UserRol"
+import { UserRol } from "../../utils/types/UserRol"
 
 
 interface Dependencies {
@@ -14,12 +14,14 @@ interface CreateUserInput {
         name: string
         email: string
         password: string
-        role: UserRole
+        role: UserRol
     }
 }
 
+type UserCreateData = Omit<User, "id">
 
-export async function createUserUseCase({ dependencies, payload }: CreateUserInput): Promise<User> {
+
+export async function createUserUseCase({ dependencies, payload }: CreateUserInput): Promise<void> {
     const { name, email, password, role } = payload
     const { userService, passwordHasher } = dependencies
 
@@ -31,8 +33,7 @@ export async function createUserUseCase({ dependencies, payload }: CreateUserInp
 
     validateRole(role)
 
-    const user: User = {
-        id: crypto.randomUUID(),
+    const user: UserCreateData = {
         name,
         email: email.toLowerCase(),
         password: passwordHashed,
@@ -42,11 +43,10 @@ export async function createUserUseCase({ dependencies, payload }: CreateUserInp
     }
 
     userService.save(user)
-    return user
 }
 
-function validateRole(role: UserRole) {
-    const validRoles: UserRole[] = ["ADMIN", "CASHIER", "WAITER"]
+function validateRole(role: UserRol) {
+    const validRoles: UserRol[] = ["ADMIN", "CASHIER", "WAITER"]
     if (!validRoles.includes(role)) {
         throw new Error("Rol inválido. Debe ser ADMIN, CASHIER o WAITER.")
     }

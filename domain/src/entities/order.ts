@@ -3,9 +3,9 @@ import { OrderStatus } from "../utils/types/OrderStatus"
 
 
 export interface Order extends Entity {
-    tableId: string
-    waiterId: string
-    cashierId?: string
+    tableId: number
+    waiterId: number
+    cashierId?: number
     status: OrderStatus,
     total?: number,
     orderDate: Date;

@@ -1,11 +1,11 @@
 import { Entity } from "../utils/types/Entity"
-import { UserRole } from "../utils/types/UserRol"
+import { UserRol } from "../utils/types/UserRol"
 
 export interface User extends Entity {
     name: string
     email: string
     password: string
-    role: UserRole
+    role: UserRol
     isActive: boolean
     createdAt: Date
 }

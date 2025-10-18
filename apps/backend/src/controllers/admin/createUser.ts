@@ -1,15 +1,19 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
-import { CreateUserDto } from "../../utils/DTOs/createUserDto";
-import { createUserUseCase } from "domain-elli"
+import { CreateUserDto } from "../../utils/dtos/createUserDto";
+import { createUserUseCase, UserRol } from "domain-elli";
 import { passwordManager } from "../../utils/passwordManager";
 import { UserRepository } from "../../repositories/userRepository"
 
 export const createUser = async (req: Request, res: Response) => {
     try {
-        const userData: CreateUserDto = req.body;
+        const userDto: CreateUserDto = req.body;
+        const role = userDto.role = userDto.role.toUpperCase() as UserRol;
+
+        const userPayload = { ...userDto, role };
+
         const data = {
-            payload: userData,
+            payload: userPayload,
             dependencies: {
                 userService: UserRepository,
                 passwordHasher: passwordManager,

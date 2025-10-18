@@ -1,8 +1,9 @@
-import { User, UserRole } from "domain-elli";
+import { User, UserRol } from "domain-elli";
 import { UserEntity } from "../../database/entities/UserEntity";
+import { IMapper } from "../../types/IMapper";
 
 
-export const userMapper = {
+export const userMapper : IMapper<User, UserEntity> = {
     toDomain,
     toPersistence
 }
@@ -13,7 +14,7 @@ export function toDomain(entity: UserEntity): User {
         name: entity.name,
         email: entity.email,
         password: entity.password,
-        role: entity.role as UserRole,
+        role: entity.role as UserRol,
         isActive: entity.isActive,
         createdAt: entity.createdAt,
     }

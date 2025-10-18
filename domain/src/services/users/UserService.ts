@@ -1,11 +1,11 @@
 import { User } from "../../entities/User"
-import { UserRole } from "../../utils/types/UserRol"
+import { UserRol } from "../../utils/types/UserRol"
 
 export interface UserService {
     findById(id: string): Promise<User | null>
-    save(user: User): Promise<void>
+    save(user: Omit<User, "id">): Promise<void>
     update(user: User): Promise<void>
     deactivate(id: string): Promise<void>
-    findByRole(role: UserRole): Promise<User[]>
+    findByRole(role: UserRol): Promise<User[]>
     findByEmail(email: string): Promise<User | null>
 }

@@ -1,4 +1,4 @@
-import { UserService, User, UserRole } from "domain-elli"; // Incluí UserRole por si se usa en el dominio
+import { UserService, User } from "domain-elli";
 import { UserEntity } from "../database/entities/UserEntity";
 import { dataSource } from "../database/data-source";
 import { Repository } from "typeorm";
@@ -27,7 +27,7 @@ export const UserRepository: UserService = {
         await userRepository.update(parseInt(id), { isActive: false });
     },
 
-    async findByRole(role: any): Promise<User[]> {
+    async findByRole(role: string): Promise<User[]> {
         const userEntities = await userRepository.findBy({ role });
         return userEntities.map(userMapper.toDomain);
     },

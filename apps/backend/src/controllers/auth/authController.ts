@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { loginUseCase } from "domain-elli";
 import { tokenManager } from "../../utils/tokenManager";
 import { generateCookie } from "../../utils/generateCookie";
-import { LoginUserDto } from "../../utils/DTOs/loginUserDto";
+import { LoginUserDto } from "../../utils/dtos/loginUserDto";
 
 
 export const login = async (req: Request, res: Response) => {
@@ -37,7 +37,7 @@ export const login = async (req: Request, res: Response) => {
     } catch (error) {
         errorResponse({
             res,
-            message: "Error creating user",
+            message: "Error logging in user",
             statusCode: 500,
         });
     }

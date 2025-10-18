@@ -2,19 +2,19 @@ import { Order } from "../../entities/Order";
 import { Product } from "../../entities/Product";
 import { OrderItem } from "../../entities/OrderItem";
 import { OrderService } from "../../services/orders/OrderService";
-import { OrderWithItems } from "domain/src/utils/types/OrderWithItems";
+import { OrderWithItems } from "../../utils/types/OrderWithItems";
 
 interface Payload {
-    tableId: string;
-    waiterId: string;
-    status: string;
-    items?: { product: Product; quantity: number }[];
+    tableId: number;
+    waiterId: number;
+    items?: { product: Product; quantity: number, notes?: string }[];
 }
 interface CreateOrderInput {
     dependencies: { orderService: OrderService };
     payload: Payload;
 }
 
+type OrderCreateData = Omit<Order, "id">;
 
 export async function createOrderUseCase({
     dependencies,
@@ -24,21 +24,21 @@ export async function createOrderUseCase({
 
     validateOrderMetadata(payload);
 
-    const order: Order = {
-        id: crypto.randomUUID(),
+    const order: OrderCreateData = {
         tableId: payload.tableId,
         waiterId: payload.waiterId,
         status: "OPEN",
         orderDate: new Date(),
     };
-    await orderService.save(order);
 
-    const items: OrderItem[] = createOrderItems(payload.items);
+    const orderCreated = await orderService.save(order);
+
+    const items = createOrderItems(orderCreated?.id, payload.items);
     for (const item of items) {
-        item.orderId = order.id;
+        item.orderId = orderCreated?.id;
     }
 
-    const orderWithItems: OrderWithItems = { ...order, items };
+    const orderWithItems: OrderWithItems = { ...orderCreated, items };
 
     return orderWithItems;
 }
@@ -52,20 +52,20 @@ function validateOrderMetadata(payload: Payload): void {
     }
 }
 
-function createOrderItems(inputItems?: { product: Product; quantity: number }[]): OrderItem[] {
+function createOrderItems(orderId: number, inputItems?: { product: Product; quantity: number, notes?: string }[]): Omit<OrderItem, "id">[] {
     return (
-        inputItems?.map(({ product, quantity }) => {
+        inputItems?.map(({ product, quantity, notes }) => {
             const unitPrice = product.price;
             const subtotal = unitPrice * quantity;
             return {
-                id: crypto.randomUUID(),
-                orderId: "",
+                notes: notes ?? "",
+                orderId: orderId,
                 productId: product.id,
                 quantity,
                 unitPrice,
                 subtotal,
                 status: "PENDING",
-            } as OrderItem;
+            } as unknown as Omit<OrderItem, "id">;
         }) || []
     );
 }

@@ -1,5 +1,5 @@
 import { Order, OrderItem } from "domain/src/entities";
 
 export interface OrderWithItems extends Order {
-    items: OrderItem[];
+    items: Omit<OrderItem, "id">[];
 }

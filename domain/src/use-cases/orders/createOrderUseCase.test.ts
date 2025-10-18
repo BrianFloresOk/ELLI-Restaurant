@@ -41,7 +41,6 @@ describe("createOrderUseCase", () => {
             payload: {
                 tableId: "T-1",
                 waiterId: "W-123",
-                status: "OPEN",
             },
         });
 
@@ -62,7 +61,6 @@ describe("createOrderUseCase", () => {
                     { product: productA, quantity: 2 },
                     { product: productB, quantity: 1 },
                 ],
-                status: "OPEN",
             },
         });
 
