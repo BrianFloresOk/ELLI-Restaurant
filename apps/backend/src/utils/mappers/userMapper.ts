@@ -17,7 +17,6 @@ export function toDomain(entity: UserEntity): User {
         isActive: entity.isActive,
         createdAt: entity.createdAt,
     }
-
     return userDomain
 }
 

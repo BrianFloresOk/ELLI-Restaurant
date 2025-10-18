@@ -32,6 +32,6 @@ export class OrderItemEntity {
     })
     status!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "varchar", nullable: true })
     notes?: string;
 }
