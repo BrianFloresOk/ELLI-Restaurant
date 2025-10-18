@@ -10,6 +10,7 @@ const VariableEnv = {
     PORT: process.env.PORT,
     JWT_SECRET: process.env.JWT_SECRET,
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+    NODE_ENV: process.env.NODE_ENV,
 } as const;
 
 
@@ -46,4 +47,5 @@ export const Config = {
         secret: VariableEnv.JWT_SECRET ?? 'your_jwt_secret_key',
         expiresIn: Number(VariableEnv.JWT_EXPIRES_IN) || 3600,
     },
+    NODE_ENV: VariableEnv.NODE_ENV,
 };

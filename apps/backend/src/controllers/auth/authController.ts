@@ -4,14 +4,16 @@ import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { loginUseCase } from "domain-elli";
 import { tokenManager } from "../../utils/tokenManager";
+import { generateCookie } from "../../utils/generateCookie";
+import { LoginUserDto } from "../../utils/DTOs/loginUserDto";
 
 
 export const login = async (req: Request, res: Response) => {
     try {
-        const { email, password } = req.body;
+        const credentials: LoginUserDto = req.body;
 
         const data = {
-            payload: { email, password },
+            payload: { email: credentials.email, password: credentials.password },
             dependencies: {
                 userService: UserRepository,
                 passwordHasher: passwordManager,
@@ -19,13 +21,15 @@ export const login = async (req: Request, res: Response) => {
             }
         };
 
-        const user = await loginUseCase(data);
+        const { token } = await loginUseCase(data);
 
-        if (user) {
+        generateCookie(res, 'access_token', token);
+
+        if (token) {
             return successResponse({
                 res,
                 message: "Login successful",
-                data: user,
+                data: token,
                 statusCode: 200,
             });
         }
