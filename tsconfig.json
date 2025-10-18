@@ -9,10 +9,12 @@
     }
   ],
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ES2020",
     "module": "ESNext",
     "strict": true,
     "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "skipLibCheck": true,
