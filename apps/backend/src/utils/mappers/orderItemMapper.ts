@@ -1,10 +1,8 @@
 import { ItemOrderStatus, OrderItem } from "domain-elli";
 import { OrderItemEntity } from "../../database/entities/OrderItemEntity";
 import { IMapper } from "../../types/IMapper";
-import { ProductEntity } from "../../database/entities/ProductEntity";
-import { OrderEntity } from "../../database/entities/OrderEntity";
 
-export const OrderItemMapper : IMapper<OrderItem, OrderItemEntity> = {
+export const orderItemMapper: IMapper<OrderItem, OrderItemEntity> = {
     toDomain,
     toPersistence
 }
@@ -30,8 +28,10 @@ export function toPersistence(domain: OrderItem): OrderItemEntity {
 
     const orderItemEntity: OrderItemEntity = {
         id: domain.id,
-        order: { id: domain.orderId } as OrderEntity,
-        product: { id: domain.productId } as ProductEntity,
+        orderId: domain.orderId,
+        productId: domain.productId,
+        order: undefined as any,
+        product: undefined as any,
         quantity: domain.quantity,
         unitPrice: domain.unitPrice,
         subtotal: domain.subtotal,
@@ -39,7 +39,7 @@ export function toPersistence(domain: OrderItem): OrderItemEntity {
         notes: domain.notes,
     };
 
-    return orderItemEntity;
+    return orderItemEntity as OrderItemEntity;
 }
 
 function calculateSubtotal(unitPrice: number, quantity: number): number {

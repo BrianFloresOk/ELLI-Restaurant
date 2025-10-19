@@ -1,3 +1,4 @@
+// PaymentEntity.ts (CORREGIDO)
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./OrderEntity";
 
@@ -6,10 +7,12 @@ export class PaymentEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @OneToOne(() => OrderEntity)
+    // Referencia inversa a la propiedad 'payment' en OrderEntity
+    @OneToOne(() => OrderEntity, order => order.payment)
     @JoinColumn({ name: "orderId" })
     order!: OrderEntity;
 
+    // ... (El resto está bien)
     @Column({ type: "varchar", length: 50 })
     method!: string;
 

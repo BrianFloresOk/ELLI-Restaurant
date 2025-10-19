@@ -1,17 +1,23 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+// OrderEntity.ts (CORREGIDO)
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TableEntity } from "./TableEntity";
 import { PaymentEntity } from "./PaymentEntity";
-
+import { OrderItemEntity } from "./OrderItemEntity"; // Nueva Importación
 
 @Entity("orders")
 export class OrderEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
+    // --- MEJORA: Exponer ID ---
+    @Column({ name: "tableId", type: "int" })
+    tableId!: number; // Columna de clave externa
+
     @ManyToOne(() => TableEntity, table => table.orders)
     @JoinColumn({ name: "tableId" })
     table!: TableEntity;
 
+    // --- RELACIONES EXISTENTES ---
     @Column({ nullable: false, type: "int" })
     waiterId!: number;
 
@@ -30,6 +36,11 @@ export class OrderEntity {
     @Column({ nullable: true, type: "timestamp" })
     closedDate?: Date;
 
-    @OneToOne(() => PaymentEntity, payment => payment.order)
+    // --- CORRECCIÓN CLAVE: Order Items ---
+    @OneToMany(() => OrderItemEntity, (item) => item.order)
+    orderItems!: OrderItemEntity[]; // <- ¡AGREGADO!
+
+    // --- RELACIÓN CON PAYMENT ---
+    @OneToOne(() => PaymentEntity, payment => payment.order) // Referencia inversa a la propiedad 'order' en PaymentEntity
     payment!: PaymentEntity;
 }

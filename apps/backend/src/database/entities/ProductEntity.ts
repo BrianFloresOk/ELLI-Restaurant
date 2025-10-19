@@ -20,7 +20,10 @@ export class ProductEntity {
     @Column({ nullable: true, type: 'int' })
     stock?: number;
 
-    @ManyToOne(() => CategoryEntity)
+    @Column({ name: "categoryId", type: "int" })
+    categoryId!: number;
+
+    @ManyToOne(() => CategoryEntity, (category) => category.products) // Agregada la referencia a products en Category
     @JoinColumn({ name: "categoryId" })
     category!: CategoryEntity;
 

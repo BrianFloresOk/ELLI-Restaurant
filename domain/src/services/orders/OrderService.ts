@@ -16,7 +16,7 @@ export interface OrderService {
     delete(id: number): Promise<void>;
     closeOrder(orderId: number): Promise<Order>;
     findByStatus(status: string): Promise<Order[]>;
-    findByTableId(tableId: string): Promise<Order[] | null>;
+    findByTableId(tableId: number): Promise<Order[] | null>;
 
     addItem(orderId: number, item: Omit<OrderItem, "id">): Promise<void>;
     updateItem(payload: UpdateOrderPayload): Promise<void>;
