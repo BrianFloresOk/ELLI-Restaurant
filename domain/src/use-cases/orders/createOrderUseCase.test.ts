@@ -19,6 +19,7 @@ describe("createOrderUseCase", () => {
         update: vi.fn(),
         delete: vi.fn(),
         list: vi.fn(),
+        updateItemStatusByOrder: vi.fn().mockResolvedValue(undefined),
     };
 
     const mockTableService: TableService = {

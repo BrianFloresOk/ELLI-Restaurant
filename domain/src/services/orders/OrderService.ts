@@ -21,4 +21,5 @@ export interface OrderService {
     removeItem(orderId: number, itemId: number): Promise<void>;
     listItems(orderId: number): Promise<OrderItem[]>;
     findItemByProduct(orderId: number, productId: number): Promise<OrderItem | null>;
+    updateItemStatusByOrder(orderId: number, fromStatus: string, toStatus: string): Promise<void>;
 }

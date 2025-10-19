@@ -1,4 +1,4 @@
-import { OrderService, Order, OrderItem } from "domain-elli";
+import { OrderService, Order, OrderItem, ItemOrderStatus } from "domain-elli";
 import { dataSource } from "../database/data-source";
 import { OrderEntity } from "../database/entities/OrderEntity";
 import { OrderItemEntity } from "../database/entities/OrderItemEntity";
@@ -151,8 +151,19 @@ export const OrderRepository: OrderService = {
 
         return entity ? orderItemMapper.toDomain(entity) : null;
     },
-};
 
+    async updateItemStatusByOrder(orderId: number, fromStatus: ItemOrderStatus, toStatus: ItemOrderStatus): Promise<void> {
+        await orderItemRepository.update(
+            {
+                orderId: orderId,
+                status: fromStatus
+            },
+            {
+                status: toStatus
+            }
+        );
+    }
+};
 
 async function findOrderEntity(orderId: number): Promise<OrderEntity> {
     const orderEntity = await orderRepository.findOneBy({ id: orderId });
