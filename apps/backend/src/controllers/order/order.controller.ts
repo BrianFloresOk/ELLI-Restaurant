@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateOrderDto, CreateOrderItemDto } from "../../utils/dtos/createOrderDto";
-import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase, sendOrderToKitchenUseCase } from "domain-elli";
+import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase, sendOrderToKitchenUseCase, viewOrderInfoUseCase } from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
 import { ProductRepository } from "../../repositories/productRepository";
@@ -106,6 +106,31 @@ export const sendOrderToKitchen = async (req: Request, res: Response) => {
         return errorResponse({
             res,
             message: "Error sending order to kitchen",
+            statusCode: 500,
+        });
+    }
+};
+
+export const viewOrderInfo = async (req: Request, res: Response) => {
+    try {
+        const orderId = parseInt(req.params.orderId);
+        const data = {
+            dependencies: { orderService: OrderRepository },
+            orderId
+        };
+
+        const order = await viewOrderInfoUseCase(data);
+
+        return successResponse({
+            res,
+            message: "Order retrieved successfully",
+            data: order,
+            statusCode: 200,
+        });
+    } catch (error) {
+        return errorResponse({
+            res,
+            message: "Error retrieving order",
             statusCode: 500,
         });
     }

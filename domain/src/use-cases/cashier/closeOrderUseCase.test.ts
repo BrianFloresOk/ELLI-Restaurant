@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 describe("closeOrderUseCase (dominio puro)", () => {
     const baseOrder: Order = {
-        id: "1",
+        id: 1,
         tableId: 1,
         waiterId: 1,
         status: "OPEN",

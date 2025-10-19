@@ -12,10 +12,10 @@ export function toDomain(entity: OrderItemEntity): OrderItem {
     const subtotal = calculateSubtotal(entity.product.price, entity.quantity);
     const orderItemDomain: OrderItem = {
         id: entity.id,
-        orderId: entity.order.id,
-        productId: entity.product.id,
+        orderId: entity.orderId,
+        productId: entity.productId,
         quantity: entity.quantity,
-        unitPrice: entity.product.price,
+        unitPrice: entity.unitPrice,
         subtotal: subtotal,
         status: entity.status as ItemOrderStatus,
         notes: entity.notes,

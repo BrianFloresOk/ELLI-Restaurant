@@ -1,6 +1,8 @@
 import { Order, OrderStatus } from "domain-elli";
 import { OrderEntity } from "../../database/entities/OrderEntity";
 import { IMapper } from "../../types/IMapper";
+import { tableMapper } from "./tableMapper";
+import { orderItemMapper } from "./orderItemMapper";
 
 
 export const orderMapper: IMapper<Order, OrderEntity> = {
@@ -18,7 +20,19 @@ export function toDomain(entity: OrderEntity): Order {
         total: entity.total,
         orderDate: entity.orderDate,
         closedDate: entity.closedDate,
-    };
+    }
+
+    if (entity.table) {
+        orderDomain.table = tableMapper.toDomain(entity.table);
+    }
+    if (entity.orderItems) {
+        orderDomain.orderItems = entity.orderItems.map(item =>
+            orderItemMapper.toDomain(item)
+        );
+    }
+
+    console.log("\n\nMapped Order Domain:", orderDomain);
+
     return orderDomain;
 }
 

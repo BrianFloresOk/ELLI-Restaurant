@@ -23,15 +23,16 @@ export const OrderRepository: OrderService = {
     async findById(id: number): Promise<Order> {
         const orderEntity = await orderRepository.findOne({
             where: { id },
-            relations: ["table"],
+            relations: ["table", "orderItems", "orderItems.product"],
         });
 
         if (!orderEntity) throw new NotFoundError("Order not found");
-        return orderMapper.toDomain(orderEntity);
+        const order = orderMapper.toDomain(orderEntity);
+        return order
     },
 
     async list(): Promise<Order[]> {
-        const entities = await orderRepository.find({ relations: ["table"] });
+        const entities = await orderRepository.find({ order: { id: "ASC" }, relations: ["table"] });
         return entities.map(orderMapper.toDomain);
     },
 
@@ -43,7 +44,6 @@ export const OrderRepository: OrderService = {
     async delete(id: number): Promise<void> {
         await orderRepository.delete({ id });
     },
-
 
     async closeOrder(orderId: number): Promise<Order> {
         const orderEntity = await findOrderEntity(orderId);

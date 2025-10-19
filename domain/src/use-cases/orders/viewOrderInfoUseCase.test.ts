@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { viewOrderStatusUseCase } from "../../use-cases/orders/viewOrderStatusUseCase";
+import { viewOrderStatusUseCase } from "./viewOrderInfoUseCase";
 import { Order } from "../../entities/Order";
 import { OrderService } from "../../services/orders/OrderService";
 

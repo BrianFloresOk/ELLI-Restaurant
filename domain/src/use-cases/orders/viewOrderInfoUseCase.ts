@@ -6,10 +6,10 @@ interface Dependencies {
 }
 interface ViewOrderInput {
     dependencies: Dependencies,
-    orderId: string,
+    orderId: number,
 }
 
-export function viewOrderStatusUseCase({ dependencies, orderId }: ViewOrderInput): Promise<Order | null> {
+export function viewOrderInfoUseCase({ dependencies, orderId }: ViewOrderInput): Promise<Order | null> {
     const { orderService } = dependencies
 
     if (!orderId) {
