@@ -62,7 +62,9 @@ export const OrderRepository: OrderService = {
 
     async findByTableId(tableId: number): Promise<Order[]> {
         const entities = await orderRepository.find({
-            where: { table: { id: tableId } as TableEntity },
+            where: {
+                table: { id: tableId } as TableEntity
+            },
             relations: ["table"],
         });
 

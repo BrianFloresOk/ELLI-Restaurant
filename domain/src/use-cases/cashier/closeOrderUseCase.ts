@@ -1,7 +1,6 @@
 import { OrderService } from "domain/src/services";
 import { Order } from "../../entities/Order"
-
-
+import { OrderItem } from "domain/src/entities";
 
 interface Dependencies {
     orderService: OrderService
@@ -12,17 +11,8 @@ interface CloseOrderInput {
     orderId: number
 }
 
-export const closeOrderUseCase = async (input: CloseOrderInput): Promise<void> => {
-    const { dependencies, orderId } = input;
+export const closeOrderUseCase = async ({ dependencies, orderId }: CloseOrderInput): Promise<void> => {
     const { orderService } = dependencies;
-
-/* 
-Calcular total de una orden
-1- buscar todas los items de la orden
-2- sumar los subtotales
-3- actualizar o completar campo "total" de orden
-4- actualizar a "closed" el estado
-*/
 
     const order = await orderService.findById(orderId);
     if (!order) {
@@ -31,17 +21,29 @@ Calcular total de una orden
 
     checkStatusOrder(order);
 
-    const updatedOrder: Order = {
-        ...order,
-        status: "CLOSED"
-    };
+    const total = calculateTotal(order.orderItems || []);
+
+    const updatedOrder: Order = updateOrder(order, total);
 
     await orderService.update(order.id, updatedOrder);
 };
+
+function updateOrder(order: Order, total: number): Order {
+    return {
+        ...order,
+        status: "CLOSED",
+        total: total,
+        closedDate: new Date(),
+    };
+}
 
 function checkStatusOrder(order: Order) {
     if(order.status !== "OPEN") {
         throw new Error("Solo se pueden cerrar órdenes en estado OPEN.");
     }
+}
+
+function calculateTotal(orderItems: OrderItem[]): number {
+    return orderItems.reduce((total, item) => total + item.subtotal, 0);
 }
 
