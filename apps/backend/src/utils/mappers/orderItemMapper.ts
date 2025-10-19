@@ -39,7 +39,7 @@ export function toPersistence(domain: OrderItem): OrderItemEntity {
         notes: domain.notes,
     };
 
-    return orderItemEntity as OrderItemEntity;
+    return orderItemEntity;
 }
 
 function calculateSubtotal(unitPrice: number, quantity: number): number {

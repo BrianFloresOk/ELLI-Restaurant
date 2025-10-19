@@ -7,27 +7,31 @@ interface Payload {
     description?: string
     price: number
     type: ProductType
-    categoryId: number
+    categoryId: number,
+    stock?: number
 }
 interface Dependencies {
     productService: ProductService
 }
-
 interface CreateProductInput {
     dependencies: Dependencies
     payload: Payload
 }
 
-export const createProductUseCase = ({ dependencies, payload }: CreateProductInput): Product => {
-    const newProduct: Product = {
-        id: crypto.randomUUID(),
+type ProductCreateData = Omit<Product, "id">
+
+export const createProductUseCase = async ({ dependencies, payload }: CreateProductInput): Promise<void> => {
+    const { productService } = dependencies
+
+    
+    const newProduct: ProductCreateData = {
         name: payload.name,
         description: payload.description,
         price: payload.price,
         type: payload.type,
-        categoryId: payload.categoryId
+        categoryId: payload.categoryId,
+        stock: payload.stock || 0,
     }
 
-    dependencies.productService.save(newProduct)
-    return newProduct;
+    await productService.save(newProduct)
 }

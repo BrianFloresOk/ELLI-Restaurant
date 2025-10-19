@@ -38,5 +38,5 @@ export function toPersistence(domain: Order): OrderEntity {
         payment: undefined as any,
         orderItems: undefined as any,
     };
-    return orderEntity as OrderEntity;
+    return orderEntity
 }

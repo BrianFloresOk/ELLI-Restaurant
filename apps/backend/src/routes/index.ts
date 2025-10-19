@@ -10,6 +10,7 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 router.use("/admin", adminRouter);
+
 router.use("/auth", authRouter);
 router.use("/order", orderRouter);
 

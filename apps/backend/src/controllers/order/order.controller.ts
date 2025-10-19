@@ -19,14 +19,14 @@ export const createOrder = async (req: Request, res: Response) => {
 
         await createOrderUseCase(dataNewOrder);
 
-        successResponse({
+        return successResponse({
             res,
             message: "Order created successfully",
             data: {},
             statusCode: 201,
         });
     } catch (error) {
-        errorResponse({
+        return errorResponse({
             res,
             message: "Error creating order",
             statusCode: 500,
@@ -51,14 +51,14 @@ export const addItemToOrder = async (req: Request, res: Response) => {
 
         await addItemToOrderUseCase(dataAddItem);
 
-        successResponse({
+        return successResponse({
             res,
             message: "Item added to order successfully",
             data: {},
             statusCode: 201,
         });
     } catch (error) {
-        errorResponse({
+        return errorResponse({
             res,
             message: "Error adding item to order",
             statusCode: 500,
@@ -69,14 +69,14 @@ export const addItemToOrder = async (req: Request, res: Response) => {
 export const listOrders = async (req: Request, res: Response) => {
     try {
         const orders = await listAllOrdersUseCase({ dependencies: { orderService: OrderRepository } });
-        successResponse({
+        return successResponse({
             res,
             message: "Orders retrieved successfully",
             data: orders,
             statusCode: 200,
         });
     } catch (error) {
-        errorResponse({
+        return errorResponse({
             res,
             message: "Error retrieving orders",
             statusCode: 500,

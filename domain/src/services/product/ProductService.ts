@@ -1,8 +1,8 @@
 import { Product } from "../../entities/Product";
 
 export interface ProductService {
-    save(product: Product): Promise<Product>;
-    findById(id: string): Promise<Product | null>;
+    save(product: Omit<Product, "id">): Promise<void>;
+    findById(id: number): Promise<Product | null>;
     findAll(): Promise<Product[]>;
-    delete(id: string): Promise<void>;
+    delete(id: number): Promise<void>;
 }
