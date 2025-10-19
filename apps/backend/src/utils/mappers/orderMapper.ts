@@ -31,8 +31,6 @@ export function toDomain(entity: OrderEntity): Order {
         );
     }
 
-    console.log("\n\nMapped Order Domain:", orderDomain);
-
     return orderDomain;
 }
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateOrderDto, CreateOrderItemDto } from "../../utils/dtos/createOrderDto";
-import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase, sendOrderToKitchenUseCase, viewOrderInfoUseCase } from "domain-elli";
+import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase, sendOrderToKitchenUseCase, viewOrderInfoUseCase, closeOrderUseCase } from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
 import { ProductRepository } from "../../repositories/productRepository";
@@ -131,6 +131,30 @@ export const viewOrderInfo = async (req: Request, res: Response) => {
         return errorResponse({
             res,
             message: "Error retrieving order",
+            statusCode: 500,
+        });
+    }
+};
+
+export const closeOrder = async (req: Request, res: Response) => {
+    try {
+        const orderId = parseInt(req.params.orderId);
+        const data = {
+            dependencies: { orderService: OrderRepository },
+            orderId
+        };
+        const closedOrder = await closeOrderUseCase(data);
+
+        return successResponse({
+            res,
+            message: "Order closed successfully",
+            data: closedOrder,
+            statusCode: 200,
+        });
+    } catch (error) {
+        return errorResponse({
+            res,
+            message: "Error closing order",
             statusCode: 500,
         });
     }

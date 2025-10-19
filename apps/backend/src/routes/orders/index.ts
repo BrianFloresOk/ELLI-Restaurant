@@ -1,5 +1,5 @@
 import express from "express";
-import { createOrder, listOrders, modifyOrderItem, sendOrderToKitchen, viewOrderInfo } from "../../controllers/order/order.controller";
+import { closeOrder, createOrder, listOrders, modifyOrderItem, sendOrderToKitchen, viewOrderInfo } from "../../controllers/order/order.controller";
 
 const router = express.Router();
 
@@ -8,5 +8,6 @@ router.get("/:orderId", viewOrderInfo);
 router.post("/", createOrder);
 router.patch("/:orderId/items", modifyOrderItem);
 router.patch("/:orderId/send", sendOrderToKitchen);
+router.put("/:orderId/close", closeOrder);
 
 export default router;
