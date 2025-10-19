@@ -4,21 +4,21 @@ import { OrderService } from "../../services/orders/OrderService";
 import { TableService } from "domain/src/services";
 
 describe("createOrderUseCase", () => {
-;
 
     const mockOrderService: OrderService = {
         save: vi.fn().mockResolvedValue(undefined),
         findById: vi.fn(),
-        list: vi.fn(),
-        update: vi.fn(),
-        delete: vi.fn(),
+        findItemByProduct: vi.fn(),
+        addItem: vi.fn(),
+        updateItemQuantity: vi.fn(),
+        removeItem: vi.fn(),
         closeOrder: vi.fn(),
+        listItems: vi.fn(),
         findByStatus: vi.fn(),
         findByTableId: vi.fn(),
-        addItem: vi.fn(),
-        updateItem: vi.fn(),
-        removeItem: vi.fn(),
-        listItems: vi.fn(),
+        update: vi.fn(),
+        delete: vi.fn(),
+        list: vi.fn(),
     };
 
     const mockTableService: TableService = {

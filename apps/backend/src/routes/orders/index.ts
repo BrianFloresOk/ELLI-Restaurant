@@ -1,11 +1,10 @@
-import express from "express"
-import { addItemToOrder, createOrder, listOrders } from "../../controllers/order/order.controller";
+import express from "express";
+import { createOrder, listOrders, modifyOrderItem } from "../../controllers/order/order.controller";
 
 const router = express.Router();
 
-router.get("/orders", listOrders)
-router.post("/create-order", createOrder);
-router.post("/:orderId/items", addItemToOrder);
-
+router.get("/", listOrders);
+router.post("/", createOrder);
+router.patch("/:orderId/items", modifyOrderItem);
 
 export default router;

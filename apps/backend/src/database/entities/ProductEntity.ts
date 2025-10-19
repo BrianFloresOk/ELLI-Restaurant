@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { CategoryEntity } from "./CategoryEntity";
 import { OrderItemEntity } from "./OrderItemEntity";
 
-
 @Entity('products')
 export class ProductEntity {
     @PrimaryGeneratedColumn()
@@ -23,7 +22,7 @@ export class ProductEntity {
     @Column({ name: "categoryId", type: "int" })
     categoryId!: number;
 
-    @ManyToOne(() => CategoryEntity, (category) => category.products) // Agregada la referencia a products en Category
+    @ManyToOne(() => CategoryEntity, (category) => category.products)
     @JoinColumn({ name: "categoryId" })
     category!: CategoryEntity;
 

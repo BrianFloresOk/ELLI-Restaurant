@@ -8,15 +8,13 @@ export class OrderItemEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    // --- MEJORA: Exponer ID de la Orden ---
     @Column({ name: "orderId", type: "int" })
     orderId!: number;
-    
-    @ManyToOne(() => OrderEntity, (order) => order.orderItems, { onDelete: "CASCADE" }) // Ahora apunta a 'orderItems'
+
+    @ManyToOne(() => OrderEntity, (order) => order.orderItems, { onDelete: "CASCADE" })
     @JoinColumn({ name: "orderId" })
     order!: OrderEntity;
     
-    // --- MEJORA: Exponer ID del Producto ---
     @Column({ name: "productId", type: "int" })
     productId!: number;
 
@@ -24,7 +22,6 @@ export class OrderItemEntity {
     @JoinColumn({ name: "productId" })
     product!: ProductEntity;
 
-    // ... (El resto de las columnas están correctas)
     @Column("int")
     quantity!: number;
 

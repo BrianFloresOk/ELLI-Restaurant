@@ -9,15 +9,13 @@ export class OrderEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    // --- MEJORA: Exponer ID ---
     @Column({ name: "tableId", type: "int" })
-    tableId!: number; // Columna de clave externa
+    tableId!: number;
 
     @ManyToOne(() => TableEntity, table => table.orders)
     @JoinColumn({ name: "tableId" })
     table!: TableEntity;
 
-    // --- RELACIONES EXISTENTES ---
     @Column({ nullable: false, type: "int" })
     waiterId!: number;
 
@@ -36,11 +34,9 @@ export class OrderEntity {
     @Column({ nullable: true, type: "timestamp" })
     closedDate?: Date;
 
-    // --- CORRECCIÓN CLAVE: Order Items ---
     @OneToMany(() => OrderItemEntity, (item) => item.order)
-    orderItems!: OrderItemEntity[]; // <- ¡AGREGADO!
+    orderItems!: OrderItemEntity[];
 
-    // --- RELACIÓN CON PAYMENT ---
-    @OneToOne(() => PaymentEntity, payment => payment.order) // Referencia inversa a la propiedad 'order' en PaymentEntity
+    @OneToOne(() => PaymentEntity, payment => payment.order)
     payment!: PaymentEntity;
 }

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateOrderDto, CreateOrderItemDto } from "../../utils/dtos/createOrderDto";
-import { addItemToOrderUseCase, createOrderUseCase, listAllOrdersUseCase, Product } from "domain-elli";
+import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase } from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
+import { ProductRepository } from "../../repositories/productRepository";
 
 export const createOrder = async (req: Request, res: Response) => {
     try {
@@ -34,38 +35,37 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 }
 
-export const addItemToOrder = async (req: Request, res: Response) => {
+export const modifyOrderItem = async (req: Request, res: Response) => {
     try {
         const orderId = parseInt(req.params.orderId);
         const payloadBody: CreateOrderItemDto = req.body;
 
-        const dataAddItem = {
-            dependencies: { orderService: OrderRepository },
+        const data = {
+            dependencies: { orderService: OrderRepository, productService: ProductRepository },
             payload: {
                 orderId,
-                product: { id: payloadBody.productId } as Product,
+                productId: payloadBody.productId,
                 quantity: payloadBody.quantity,
                 notes: payloadBody.notes,
             }
-        }
+        };
 
-        await addItemToOrderUseCase(dataAddItem);
+        await modifyItemInOrderUseCase(data);
 
         return successResponse({
             res,
-            message: "Item added to order successfully",
+            message: "Order item modified successfully",
             data: {},
-            statusCode: 201,
+            statusCode: 200,
         });
     } catch (error) {
         return errorResponse({
             res,
-            message: "Error adding item to order",
+            message: "Error modifying order item",
             statusCode: 500,
         });
     }
-}
-
+};
 export const listOrders = async (req: Request, res: Response) => {
     try {
         const orders = await listAllOrdersUseCase({ dependencies: { orderService: OrderRepository } });
