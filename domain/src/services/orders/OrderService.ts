@@ -3,25 +3,23 @@ import { Order } from "../../entities/Order";
 
 
 interface UpdateOrderPayload {
-    orderId: string;
-    itemId: string;
+    orderId: number;
+    itemId: number;
     data: Omit<OrderItem, "id" | "orderId" | "productId">;
 }
 
-
-
 export interface OrderService {
-    findById(id: string): Promise<Order | null>;
+    findById(id: number): Promise<Order | null>;
     list(): Promise<Order[]>;
     save(order: Omit<Order, "id">): Promise<Order>;
-    update(id: string, data: Order): Promise<void>;
-    delete(id: string): Promise<void>;
-    closeOrder(orderId: string): Promise<Order>;
+    update(id: number, data: Order): Promise<void>;
+    delete(id: number): Promise<void>;
+    closeOrder(orderId: number): Promise<Order>;
     findByStatus(status: string): Promise<Order[]>;
     findByTableId(tableId: string): Promise<Order[] | null>;
 
-    addItem(orderId: string, item: OrderItem): Promise<void>;
+    addItem(orderId: number, item: Omit<OrderItem, "id">): Promise<void>;
     updateItem(payload: UpdateOrderPayload): Promise<void>;
-    removeItem(orderId: string, itemId: string): Promise<void>;
-    listItems(orderId: string): Promise<OrderItem[]>;
+    removeItem(orderId: number, itemId: number): Promise<void>;
+    listItems(orderId: number): Promise<OrderItem[]>;
 }

@@ -3,15 +3,18 @@ import { OrderItem } from "../../entities/OrderItem";
 import { OrderService } from "../../services/orders/OrderService";
 
 interface Payload {
-    orderId: string;
+    orderId: number;
     product: Product;
     quantity: number;
+    notes?: string;
 }
 
 interface AddItemInput {
     dependencies: { orderService: OrderService };
     payload: Payload;
 }
+
+type OrderItemCreateData = Omit<OrderItem, "id">;
 
 export async function addItemToOrderUseCase({
     dependencies,
@@ -35,12 +38,13 @@ export async function addItemToOrderUseCase({
             data: updatedItem,
         });
     } else {
-        const newItem: OrderItem = createOrderItem(payload);
+        const newItem: OrderItemCreateData = createOrderItem(payload);
+        newItem.orderId = order.id;
         await orderService.addItem(orderId, newItem);
     }
 }
 
-async function findItemInOrder(orderService: OrderService, orderId: string, product: Product) {
+async function findItemInOrder(orderService: OrderService, orderId: number, product: Product) {
     const items = await orderService.listItems(orderId);
 
     const existingItem = items.find(i => i.productId === product.id);
@@ -55,20 +59,20 @@ function updateQuantityAndTotalOfOrderItem(existingItem: OrderItem, quantity: nu
     };
 }
 
-function createOrderItem(payload: Payload): OrderItem {
-    const { orderId, product, quantity } = payload;
+function createOrderItem(payload: Payload): OrderItemCreateData {
+    const { orderId, product, quantity, notes } = payload;
     return {
-        id: crypto.randomUUID(),
-        orderId,
+        notes,
+        orderId: orderId,
         productId: product.id,
         quantity,
         unitPrice: product.price,
-        subtotal: product.price * quantity,
+        subtotal: quantity * product.price,
         status: "PENDING",
-    };
+    } as OrderItemCreateData;
 }
 
-async function findOrder(orderService: OrderService, orderId: string) {
+async function findOrder(orderService: OrderService, orderId: number) {
     const order = await orderService.findById(orderId);
     if (!order) throw new Error("Pedido no encontrado.");
     if (order.status !== "OPEN")

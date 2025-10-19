@@ -28,25 +28,25 @@ describe("addItemToOrderUseCase", () => {
         };
 
         mockOrder = {
-            id: "order-123",
-            tableId: "table-1",
-            waiterId: "waiter-1",
+            id: 3,
+            tableId: 1,
+            waiterId: 1,
             status: "OPEN",
             orderDate: new Date(),
         };
 
         mockProduct = {
-            id: "product-1",
+            id: 1,
             name: "Pizza Margarita",
             price: 10,
             type: "DISH",
-            categoryId: "cat-1",
+            categoryId: 1,
             description: "Delicious pizza",
             stock: 20,
         };
 
         existingItem = {
-            id: "item-1",
+            id: 1,
             orderId: mockOrder.id,
             productId: mockProduct.id,
             quantity: 1,

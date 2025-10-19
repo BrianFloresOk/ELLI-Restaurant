@@ -1,6 +1,6 @@
 import { Table } from "../../entities/Table";
 
 export interface TableService {
-    findById(id: string) : Promise<Table | null>,
-    update(id: string, data: Partial<Table>) : Promise<void>
+    findById(id: number) : Promise<Table | null>,
+    update(id: number, data: Partial<Table>) : Promise<void>
 }

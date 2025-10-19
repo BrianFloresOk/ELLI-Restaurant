@@ -7,6 +7,6 @@ export interface Product extends Entity {
     description?: string
     price: number
     type: ProductType
-    categoryId: string,
+    categoryId: number,
     stock?: number
 }

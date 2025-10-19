@@ -36,7 +36,7 @@ describe("assignTableToReservationUseCase", () => {
 
     beforeEach(() => {
         reservation = {
-            id: "r1",
+            id: 1,
             customerName: mockUser.customerName,
             customerEmail: mockUser.customerEmail,
             people: 2,
@@ -47,7 +47,7 @@ describe("assignTableToReservationUseCase", () => {
         };
 
         table = {
-            id: "t1",
+            id: 1,
             capacity: 4,
             status: "AVAILABLE",
         };
@@ -63,10 +63,10 @@ describe("assignTableToReservationUseCase", () => {
 
         const result = await assignTableToReservationUseCase({
             dependencies,
-            payload: { reservationId: "r1", tableId: "t1" },
+            payload: { reservationId: 1, tableId: 1 },
         });
 
-        expect(result.tableId).toBe("t1");
+        expect(result.tableId).toBe(1);
         expect(result.status).toBe("CONFIRMED");
 
         expect(mockReservationService.update).toHaveBeenCalledWith(
@@ -86,14 +86,14 @@ describe("assignTableToReservationUseCase", () => {
     });
 
     it("lanza error si la reserva ya tiene mesa asignada", async () => {
-        reservation.tableId = "t9";
+        reservation.tableId = 9;
         vi.mocked(mockReservationService.findById).mockResolvedValue(reservation);
         vi.mocked(mockTableService.findById).mockResolvedValue(table);
 
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("La reserva ya tiene una mesa asignada.");
     });
@@ -106,7 +106,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("La mesa no está disponible.");
     });
@@ -119,7 +119,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("No se puede asignar una mesa a una reserva cancelada o completada.");
     });
@@ -132,7 +132,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("No se puede asignar una mesa a una reserva cancelada o completada.");
     });
@@ -141,7 +141,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "", tableId: "t1" }
+                payload: { reservationId: 0, tableId: 1 }
             })
         ).rejects.toThrow("La reserva es requerida.");
     });
@@ -150,7 +150,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "" }
+                payload: { reservationId: 1, tableId: 0 }
             })
         ).rejects.toThrow("La mesa es requerida.");
     });
@@ -162,7 +162,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("Reserva no encontrada.");
     });
@@ -174,7 +174,7 @@ describe("assignTableToReservationUseCase", () => {
         await expect(
             assignTableToReservationUseCase({
                 dependencies,
-                payload: { reservationId: "r1", tableId: "t1" }
+                payload: { reservationId: 1, tableId: 1 }
             })
         ).rejects.toThrow("Mesa no encontrada.");
     });
@@ -187,18 +187,18 @@ describe("assignTableToReservationUseCase", () => {
 
         await assignTableToReservationUseCase({
             dependencies,
-            payload: { reservationId: "r1", tableId: "t1" },
+            payload: { reservationId: 1, tableId: 1 },
         });
 
         expect(mockReservationService.update).toHaveBeenCalledTimes(1);
         expect(mockTableService.update).toHaveBeenCalledTimes(1);
-        expect(mockReservationService.update).toHaveBeenCalledWith("r1", {
+        expect(mockReservationService.update).toHaveBeenCalledWith(1, {
             ...reservation,
-            tableId: "t1",
+            tableId: 1,
             status: "CONFIRMED"
         });
 
-        expect(mockTableService.update).toHaveBeenCalledWith("t1", {
+        expect(mockTableService.update).toHaveBeenCalledWith(1, {
             ...table,
             status: "OCCUPIED"
         });

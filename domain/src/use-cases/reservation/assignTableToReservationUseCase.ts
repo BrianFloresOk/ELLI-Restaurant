@@ -11,8 +11,8 @@ interface Dependencies {
 interface AssignTableInput {
     dependencies: Dependencies;
     payload: {
-        reservationId: string;
-        tableId: string;
+        reservationId: number;
+        tableId: number;
     };
 }
 
