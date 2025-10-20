@@ -4,3 +4,4 @@ export * from './product/ProductService.js';
 export * from "./reservation/ReservationService.js"
 export * from './table/TableService.js';
 export * from './users/UserService.js';
+export * from './payment/PaymentService.js';

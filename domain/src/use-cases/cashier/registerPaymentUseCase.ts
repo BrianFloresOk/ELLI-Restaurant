@@ -1,50 +1,66 @@
+import { PaymentService } from "domain/src/services/payment/PaymentService";
 import { Order } from "../../entities/Order";
 import { Payment } from "../../entities/Payment";
+import { OrderService } from "domain/src/services";
 
-interface RegisterPaymentInput {
-    order: Order;
-    method: Payment["method"];
-    amount: number;
-    cashierId: string;
+interface Dependencies {
+    paymentService: PaymentService;
+    orderService: OrderService;
 }
 
-export function registerPaymentUseCase(input: RegisterPaymentInput): Order {
-    const { order, method, amount, cashierId } = input;
+interface Payload {
+    orderId: number;
+    method: Payment["method"];
+    amount: number;
+    cashierId: number;
+}
 
+interface RegisterPaymentInput {
+    dependencies: Dependencies;
+    payload: Payload;
+}
+
+type CreatePaymentData = Omit<Payment, "id">;
+
+export async function registerPaymentUseCase({ dependencies, payload }: RegisterPaymentInput): Promise<void> {
+    const { orderId, method, amount, cashierId } = payload;
+    const { paymentService, orderService } = dependencies;
+
+    const order = await orderService.findById(orderId);
     if (!order) {
-        throw new Error("La orden es requerida.");
+        throw new Error("Orden no encontrada.");
     }
 
-    if (order.status === "CANCELLED") {
-        throw new Error("No se puede registrar un pago en una orden cancelada.");
-    }
+    validatePaymentData(order, method, amount, cashierId);
 
-    if (order.status === "CLOSED") {
-        throw new Error("La orden ya está cerrada.");
-    }
-
-    if (amount <= 0) {
-        throw new Error("El monto del pago debe ser mayor que cero.");
-    }
-
-    if (!cashierId) {
-        throw new Error("El cajero es requerido para registrar el pago.");
-    }
-
-    // Crear el pago
-    const payment: Payment = {
-        id: crypto.randomUUID(),
-        orderId: Number(order.id),
+    const payment: CreatePaymentData = {
+        orderId: order.id,
         method,
         amount,
-        paidAt: new Date()
+        paidAt: new Date(),
     };
 
-    // Actualizar orden
+    await paymentService.save(payment);
     const updatedOrder: Order = {
         ...order,
         status: "CLOSED"
     };
+    await orderService.update(order.id, updatedOrder);
 
-    return updatedOrder;
 }
+
+function validatePaymentData(order: Order, method: string, amount: number, cashierId: number) {
+    if (order.status !== "CLOSED") {
+        throw new Error("Order must be closed.");
+    }
+    if (!method) {
+        throw new Error("Payment method is required.");
+    }
+    if (amount <= 0) {
+        throw new Error("Payment amount must be greater than zero.");
+    }
+    if (!cashierId) {
+        throw new Error("Cashier ID is required.");
+    }
+}
+
