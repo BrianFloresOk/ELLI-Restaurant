@@ -10,7 +10,7 @@ export const orderMapper: IMapper<Order, OrderEntity> = {
     toPersistence
 }
 
-export function toDomain(entity: OrderEntity): Order {
+function toDomain(entity: OrderEntity): Order {
     const orderDomain: Order = {
         id: entity.id,
         tableId: entity.tableId,
@@ -35,7 +35,7 @@ export function toDomain(entity: OrderEntity): Order {
 }
 
 
-export function toPersistence(domain: Order): OrderEntity {
+function toPersistence(domain: Order): OrderEntity {
 
     const orderEntity: OrderEntity = {
         id: domain.id,

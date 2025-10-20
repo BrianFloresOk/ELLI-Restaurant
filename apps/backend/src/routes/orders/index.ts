@@ -1,5 +1,5 @@
 import express from "express";
-import { closeOrder, createOrder, listOrders, modifyOrderItem, sendOrderToKitchen, viewOrderInfo } from "../../controllers/order/order.controller";
+import { closeOrder, createOrder, listOrders, modifyOrderItem, sendOrderToKitchen, viewOrderInfo } from "../../controllers/order";
 
 const router = express.Router();
 

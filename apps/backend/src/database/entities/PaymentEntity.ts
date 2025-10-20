@@ -9,7 +9,10 @@ export class PaymentEntity {
 
     @OneToOne(() => OrderEntity, order => order.payment)
     @JoinColumn({ name: "orderId" })
-    order!: OrderEntity;
+    order?: OrderEntity;
+
+    @Column({ type: "int" })
+    orderId!: number;
 
     @Column({ type: "varchar", length: 50 })
     method!: string;

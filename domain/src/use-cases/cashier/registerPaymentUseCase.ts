@@ -43,7 +43,7 @@ export async function registerPaymentUseCase({ dependencies, payload }: Register
     await paymentService.save(payment);
     const updatedOrder: Order = {
         ...order,
-        status: "CLOSED"
+        status: "IS_PAID",
     };
     await orderService.update(order.id, updatedOrder);
 
