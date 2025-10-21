@@ -1,1 +1,2 @@
-export type UserRole = 'ADMIN' | 'CASHIER' | 'WAITER'
+export type UserRol = 'ADMIN' | 'CASHIER' | 'WAITER'
+export default UserRol;
