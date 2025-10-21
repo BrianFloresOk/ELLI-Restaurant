@@ -71,7 +71,7 @@ describe("registerPaymentUseCase", () => {
         );
         expect(mockOrderService.update).toHaveBeenCalledWith(
             1,
-            expect.objectContaining({ status: "CLOSED" })
+            expect.objectContaining({ status: "IS_PAID" })
         );
     });
 

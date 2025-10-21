@@ -1,24 +1,47 @@
 import { describe, it, expect, vi } from "vitest";
 import { createCategoryUseCase } from "./createCategoryUseCase";
 import { CategoryService } from "../../services/category/CategoryService";
+import { Category } from "../../entities/Category";
 
-describe("ADMIN - Create category", () => {
-
-    const mockDependencies : CategoryService = {
+describe("createCategoryUseCase", () => {
+    const mockCategoryService = {
         save: vi.fn(),
-        findById: vi.fn(),
-        findAll: vi.fn(),
-        delete: vi.fn()
-    }
+    } as Partial<CategoryService> as CategoryService;
 
-    it("deberia crear una categoria correctamente", () => {
-        const categoryMock = {
-            name: "Pastas",
-            description: "Pastas frescas al huevo"
-        }
-        const response = createCategoryUseCase({ dependencies: { categoryService: mockDependencies }, payload: categoryMock })
-        expect(response).toMatchObject(categoryMock)
-        expect(mockDependencies.save).toHaveBeenCalledWith(response)
-    })
+    it("debería crear una categoría sin preparationArea", async () => {
+        const payload = {
+            name: "Bebidas",
+            description: "Categoría de bebidas frías y calientes",
+        };
 
-})
+        const result = await createCategoryUseCase({
+            dependencies: { categoryService: mockCategoryService },
+            payload,
+        });
+
+        expect(result).toEqual(payload);
+        expect(mockCategoryService.save).toHaveBeenCalledWith(payload);
+    });
+
+    it("debería crear una categoría con preparationArea válida", async () => {
+        const payload = {
+            name: "Postres",
+            description: "Categoría de postres dulces",
+            preparationArea: "PASTRY",
+        };
+
+        const expected: Omit<Category, "id"> = {
+            name: "Postres",
+            description: "Categoría de postres dulces",
+            preparationArea: "PASTRY",
+        };
+
+        const result = await createCategoryUseCase({
+            dependencies: { categoryService: mockCategoryService },
+            payload,
+        });
+
+        expect(result).toEqual(expected);
+        expect(mockCategoryService.save).toHaveBeenCalledWith(expected);
+    });
+});

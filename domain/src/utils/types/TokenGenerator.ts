@@ -1,5 +1,5 @@
 type Payload = {
-    id: string;
+    id: number;
     email: string;
     role: string;
 }

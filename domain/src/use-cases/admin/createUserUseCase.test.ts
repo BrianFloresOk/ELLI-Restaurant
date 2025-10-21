@@ -1,72 +1,86 @@
-/* import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createUserUseCase } from "./createUserUseCase";
 import { UserService } from "../../services/users/UserService";
-import { UserRole } from "../../utils/types/UserRol";
+import { PasswordHasher } from "../../utils/types/PasswordHasher";
+import { UserRol } from "../../utils/types/UserRol";
 
 describe("createUserUseCase", () => {
-    const mockUserService: UserService = {
+    const mockUserService = {
         save: vi.fn(),
-        findById: vi.fn(),
-        deactivate: vi.fn(),
-        update: vi.fn(),
-        findByRole: vi.fn(),
-        findByEmail: vi.fn(),
-    }
+    } as unknown as UserService;
 
-    const basePayload = {
-        name: "Juan Pérez",
-        email: "juan@example.com",
-        password: "123456",
-        role: "ADMIN" as UserRole,
-    };
+    const mockPasswordHasher = {
+        hash: vi.fn(),
+    } as unknown as PasswordHasher;
 
-    it("debería crear un usuario exitosamente", () => {
-        const result = createUserUseCase({
-            dependencies: { userService: mockUserService },
-            payload: basePayload,
-        });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-        expect(result).toMatchObject({
+    it("debería crear un usuario correctamente con datos válidos", async () => {
+        const payload = {
             name: "Juan Pérez",
-            email: "juan@example.com",
-            role: "ADMIN",
-            isActive: "ACTIVE",
+            email: "JUAN@MAIL.COM",
+            password: "12345",
+            role: "ADMIN" as UserRol,
+        };
+
+        mockPasswordHasher.hash = vi.fn().mockResolvedValue("hashed_12345");
+
+        const now = new Date();
+        vi.setSystemTime(now); // Congelamos la fecha para probar createdAt
+
+        await createUserUseCase({
+            dependencies: { userService: mockUserService, passwordHasher: mockPasswordHasher },
+            payload,
         });
-        expect(result.id).toBeDefined();
-        expect(result.createdAt).toBeInstanceOf(Date);
-        expect(mockUserService.save).toHaveBeenCalledWith(result);
+
+        expect(mockPasswordHasher.hash).toHaveBeenCalledWith("12345");
+        expect(mockUserService.save).toHaveBeenCalledWith({
+            name: "Juan Pérez",
+            email: "juan@mail.com",
+            password: "hashed_12345",
+            role: "ADMIN",
+            isActive: true,
+            createdAt: now,
+        });
     });
 
-    it("debería lanzar un error si falta algún campo requerido", () => {
-        expect(() =>
-            createUserUseCase({
-                dependencies: { userService: mockUserService },
-                payload: { ...basePayload, name: "" },
-            })
-        ).toThrow("Nombre, email y contraseña son requeridos.");
+    it("debería lanzar un error si falta nombre, email o password", async () => {
+        const payload = {
+            name: "",
+            email: "",
+            password: "",
+            role: "CASHIER" as UserRol,
+        };
 
-        expect(() =>
+        await expect(
             createUserUseCase({
-                dependencies: { userService: mockUserService },
-                payload: { ...basePayload, email: "" },
+                dependencies: { userService: mockUserService, passwordHasher: mockPasswordHasher },
+                payload,
             })
-        ).toThrow("Nombre, email y contraseña son requeridos.");
+        ).rejects.toThrow("Nombre, email y contraseña son requeridos.");
 
-        expect(() =>
-            createUserUseCase({
-                dependencies: { userService: mockUserService },
-                payload: { ...basePayload, password: "" },
-            })
-        ).toThrow("Nombre, email y contraseña son requeridos.");
+        expect(mockUserService.save).not.toHaveBeenCalled();
     });
 
-    it("debería lanzar un error si el rol es inválido", () => {
-        expect(() =>
+    it("debería lanzar un error si el rol es inválido", async () => {
+        const payload = {
+            name: "Lucía",
+            email: "lucia@mail.com",
+            password: "abc123",
+            role: "CHEF" as UserRol, // Rol inválido
+        };
+
+        mockPasswordHasher.hash = vi.fn().mockResolvedValue("hashed_pw");
+
+        await expect(
             createUserUseCase({
-                dependencies: { userService: mockUserService },
-                payload: { ...basePayload, role: "COCINERO" as UserRole },
+                dependencies: { userService: mockUserService, passwordHasher: mockPasswordHasher },
+                payload,
             })
-        ).toThrow("Rol inválido. Debe ser ADMIN, CASHIER o WAITER.");
+        ).rejects.toThrow("Rol inválido. Debe ser ADMIN, CASHIER o WAITER.");
+
+        expect(mockUserService.save).not.toHaveBeenCalled();
     });
 });
- */

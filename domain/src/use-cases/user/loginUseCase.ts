@@ -21,7 +21,7 @@ interface Token {
 }
 
 interface PayloadToken { 
-    id: string;
+    id: number;
     email: string;
     role: string;
 }

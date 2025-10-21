@@ -5,45 +5,36 @@ import { PasswordHasher, TokenGenerator } from "domain/src/utils/types";
 import { User } from "../../entities/User";
 
 describe("loginUseCase", () => {
-    let mockUserService: UserService;
-    let mockPasswordHasher: PasswordHasher;
-    let mockTokenGenerator: TokenGenerator;
-    let mockUser: User;
+    const mockUserService = {
+        findByEmail: vi.fn(),
+    } as unknown as UserService;
+
+    const mockPasswordHasher = {
+        compare: vi.fn(),
+    } as unknown as PasswordHasher;
+
+    const mockTokenGenerator = {
+        generate: vi.fn(),
+    } as unknown as TokenGenerator;
 
     beforeEach(() => {
-        mockUser = {
-            id: "user-123",
-            name: "John Doe",
-            email: "john@example.com",
-            password: "hashed-password",
+        vi.clearAllMocks();
+    });
+
+    it("debería retornar un token si el login es exitoso", async () => {
+        const user: User = {
+            id: 1,
+            name: "Ana Gómez",
+            email: "ana@mail.com",
+            password: "hashed_password",
             role: "ADMIN",
             isActive: true,
             createdAt: new Date(),
         };
 
-        mockUserService = {
-            findByEmail: vi.fn(),
-            save: vi.fn(),
-            update: vi.fn(),
-            delete: vi.fn(),
-            list: vi.fn(),
-        } as any;
-
-        mockPasswordHasher = {
-            compare: vi.fn(),
-            hash: vi.fn(),
-        };
-
-        mockTokenGenerator = {
-            generate: vi.fn(),
-            verify: vi.fn(),
-        };
-    });
-
-    it("debería retornar un token válido si el login es correcto", async () => {
-        (mockUserService.findByEmail as any).mockResolvedValue(mockUser);
-        (mockPasswordHasher.compare as any).mockResolvedValue(true);
-        (mockTokenGenerator.generate as any).mockResolvedValue("token-123");
+        mockUserService.findByEmail = vi.fn().mockResolvedValue(user);
+        mockPasswordHasher.compare = vi.fn().mockResolvedValue(true);
+        mockTokenGenerator.generate = vi.fn().mockResolvedValue("jwt_token_value");
 
         const result = await loginUseCase({
             dependencies: {
@@ -51,21 +42,24 @@ describe("loginUseCase", () => {
                 passwordHasher: mockPasswordHasher,
                 tokenGenerator: mockTokenGenerator,
             },
-            payload: { email: mockUser.email, password: "123456" },
+            payload: {
+                email: "ana@mail.com",
+                password: "12345",
+            },
         });
 
-        expect(result).toEqual({ token: "token-123" });
-        expect(mockUserService.findByEmail).toHaveBeenCalledWith(mockUser.email);
-        expect(mockPasswordHasher.compare).toHaveBeenCalledWith("123456", mockUser.password);
+        expect(mockUserService.findByEmail).toHaveBeenCalledWith("ana@mail.com");
+        expect(mockPasswordHasher.compare).toHaveBeenCalledWith("12345", "hashed_password");
         expect(mockTokenGenerator.generate).toHaveBeenCalledWith({
-            id: mockUser.id,
-            email: mockUser.email,
-            role: mockUser.role,
+            id: 1,
+            email: "ana@mail.com",
+            role: "ADMIN",
         });
+        expect(result).toEqual({ token: "jwt_token_value" });
     });
 
-    it("debería lanzar error si el usuario no existe", async () => {
-        (mockUserService.findByEmail as any).mockResolvedValue(null);
+    it("debería lanzar error si la cuenta no existe", async () => {
+        mockUserService.findByEmail = vi.fn().mockResolvedValue(null);
 
         await expect(
             loginUseCase({
@@ -74,14 +68,27 @@ describe("loginUseCase", () => {
                     passwordHasher: mockPasswordHasher,
                     tokenGenerator: mockTokenGenerator,
                 },
-                payload: { email: "nonexistent@example.com", password: "123456" },
-            }),
+                payload: { email: "notfound@mail.com", password: "1234" },
+            })
         ).rejects.toThrow("Account not found.");
+
+        expect(mockPasswordHasher.compare).not.toHaveBeenCalled();
+        expect(mockTokenGenerator.generate).not.toHaveBeenCalled();
     });
 
-    it("debería lanzar error si la contraseña es incorrecta", async () => {
-        (mockUserService.findByEmail as any).mockResolvedValue(mockUser);
-        (mockPasswordHasher.compare as any).mockResolvedValue(false);
+    it("debería lanzar error si la contraseña es inválida", async () => {
+        const user: User = {
+            id: 2,
+            name: "Carlos",
+            email: "carlos@mail.com",
+            password: "hashed_pw",
+            role: "CASHIER",
+            isActive: true,
+            createdAt: new Date(),
+        };
+
+        mockUserService.findByEmail = vi.fn().mockResolvedValue(user);
+        mockPasswordHasher.compare = vi.fn().mockResolvedValue(false);
 
         await expect(
             loginUseCase({
@@ -90,8 +97,10 @@ describe("loginUseCase", () => {
                     passwordHasher: mockPasswordHasher,
                     tokenGenerator: mockTokenGenerator,
                 },
-                payload: { email: mockUser.email, password: "wrong-password" },
-            }),
+                payload: { email: "carlos@mail.com", password: "wrong_pw" },
+            })
         ).rejects.toThrow("Invalid credentials.");
+
+        expect(mockTokenGenerator.generate).not.toHaveBeenCalled();
     });
 });

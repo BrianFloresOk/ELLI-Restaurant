@@ -15,25 +15,26 @@ interface CreateCategoryInput {
     payload: Payload
 }
 
+type CreateCategoryData = Omit<Category, "id">
 
-export const createCategoryUseCase = ({ dependencies, payload }: CreateCategoryInput): Category => {
+
+export const createCategoryUseCase = async ({ dependencies, payload }: CreateCategoryInput): Promise<CreateCategoryData> => {
     const { categoryService } = dependencies;
     const { name, description, preparationArea } = payload;
 
-    const newCategory: Category = {
-        id: crypto.randomUUID(),
+    const newCategory: CreateCategoryData = {
         name,
         description,
     }
 
     addPreparationArea(preparationArea, newCategory)
 
-    categoryService.save(newCategory);
+    await categoryService.save(newCategory);
 
     return newCategory
 }
 
-function addPreparationArea(preparationArea: string | undefined, newCategory: Category) {
+function addPreparationArea(preparationArea: string | undefined, newCategory: Omit<Category, "id">) {
     if (preparationArea) {
         if (preparationArea !== 'KITCHEN' && preparationArea !== 'BAR' && preparationArea !== 'PASTRY') {
             throw new Error("Área de preparación inválida. Debe ser KITCHEN, BAR o PASTRY.")
