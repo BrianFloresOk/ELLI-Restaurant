@@ -38,7 +38,6 @@ describe("registerPaymentUseCase", () => {
     });
 
     it("debería registrar un pago exitosamente y cerrar la orden", async () => {
-        // Arrange
         const mockOrder: Order = {
             id: 1,
             status: "CLOSED",

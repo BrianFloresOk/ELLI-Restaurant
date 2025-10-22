@@ -1,4 +1,4 @@
-import { Entity } from "../utils/types/Entity"
+import { Entity } from "../utils/types/Entity";
 
 export type Area = 'KITCHEN' | 'BAR' | 'PASTRY';
 

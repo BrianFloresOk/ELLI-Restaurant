@@ -1,5 +1,5 @@
+import { UserRol } from "../utils/types"
 import { Entity } from "../utils/types/Entity"
-import { UserRol } from "../utils/types/UserRol"
 
 export interface User extends Entity {
     name: string
