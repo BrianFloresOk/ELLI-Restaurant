@@ -10,7 +10,7 @@ export const userMapper : IMapper<User, UserEntity> = {
 
 export function toDomain(entity: UserEntity): User {
     const userDomain: User = {
-        id: entity.id.toString(),
+        id: entity.id,
         name: entity.name,
         email: entity.email,
         password: entity.password,
@@ -24,7 +24,7 @@ export function toDomain(entity: UserEntity): User {
 
 export function toPersistence(domainUser: User): UserEntity {
     const userEntity: UserEntity = {
-        id: parseInt(domainUser.id),
+        id: domainUser.id,
         name: domainUser.name,
         email: domainUser.email,
         password: domainUser.password,

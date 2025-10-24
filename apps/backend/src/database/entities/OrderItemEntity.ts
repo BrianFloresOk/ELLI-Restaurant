@@ -28,9 +28,6 @@ export class OrderItemEntity {
     @Column("decimal", { precision: 10, scale: 2 })
     unitPrice!: number;
 
-    @Column("decimal", { precision: 10, scale: 2 })
-    subtotal!: number;
-
     @Column({ type: "varchar", nullable: false, default: "pending" })
     status!: string;
 

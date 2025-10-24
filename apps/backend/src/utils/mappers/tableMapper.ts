@@ -13,7 +13,7 @@ export function toDomain(entity: TableEntity): Table {
     const tableDomain: Table = {
         id: entity.id,
         capacity: entity.capacity,
-        status: entity.status as 'AVAILABLE' | 'OCCUPIED',
+        status: entity.status as Table['status'],
     };
     return tableDomain;
 }

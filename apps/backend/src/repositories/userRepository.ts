@@ -13,8 +13,8 @@ export const UserRepository: UserService = {
         await userRepository.save(userEntity);
     },
 
-    async findById(id: string): Promise<User | null> {
-        const userEntity = await userRepository.findOneBy({ id: parseInt(id) as any });
+    async findById(id: number): Promise<User | null> {
+        const userEntity = await userRepository.findOneBy({ id });
         return userEntity ? userMapper.toDomain(userEntity) : null;
     },
 
@@ -23,8 +23,8 @@ export const UserRepository: UserService = {
         await userRepository.save(userEntity);
     },
 
-    async deactivate(id: string): Promise<void> {
-        await userRepository.update(parseInt(id), { isActive: false });
+    async deactivate(id: number): Promise<void> {
+        await userRepository.update(id, { isActive: false });
     },
 
     async findByRole(role: string): Promise<User[]> {

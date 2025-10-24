@@ -154,7 +154,8 @@ export const closeOrder = async (req: Request, res: Response) => {
         const data = {
             dependencies: { 
                 orderService: OrderRepository,
-                tableService: TableRepository
+                tableService: TableRepository,
+                productService: ProductRepository
             },
             orderId
         };

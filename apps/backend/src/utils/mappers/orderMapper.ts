@@ -1,7 +1,6 @@
 import { Order, OrderStatus } from "domain-elli";
 import { OrderEntity } from "../../database/entities/OrderEntity";
 import { IMapper } from "../../types/IMapper";
-import { tableMapper } from "./tableMapper";
 import { orderItemMapper } from "./orderItemMapper";
 
 
@@ -17,14 +16,10 @@ function toDomain(entity: OrderEntity): Order {
         waiterId: entity.waiterId,
         cashierId: entity.cashierId,
         status: entity.status as OrderStatus,
-        total: entity.total,
         orderDate: entity.orderDate,
         closedDate: entity.closedDate,
     }
 
-    if (entity.table) {
-        orderDomain.table = tableMapper.toDomain(entity.table);
-    }
     if (entity.orderItems) {
         orderDomain.orderItems = entity.orderItems.map(item =>
             orderItemMapper.toDomain(item)
@@ -44,7 +39,6 @@ function toPersistence(domain: Order): OrderEntity {
         waiterId: domain.waiterId,
         cashierId: domain.cashierId ? domain.cashierId : undefined,
         status: domain.status,
-        total: domain.total ?? 0,
         orderDate: domain.orderDate ?? new Date(),
         closedDate: domain.closedDate,
         payment: undefined as any,

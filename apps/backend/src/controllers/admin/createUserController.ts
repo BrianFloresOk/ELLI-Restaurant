@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateUserDto } from "../../utils/DTOs/createUserDto";
-import { createUserUseCase, UserRol } from "domain-elli";
 import { passwordManager } from "../../utils/passwordManager";
 import { UserRepository } from "../../repositories/userRepository"
+import { UserRol } from "domain-elli/src/utils/types/UserRol";
+import { createUserUseCase } from "domain-elli";
 
 export const createUser = async (req: Request, res: Response) => {
     try {

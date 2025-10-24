@@ -9,14 +9,12 @@ export const orderItemMapper: IMapper<OrderItem, OrderItemEntity> = {
 
 export function toDomain(entity: OrderItemEntity): OrderItem {
 
-    const subtotal = calculateSubtotal(entity.product.price, entity.quantity);
     const orderItemDomain: OrderItem = {
         id: entity.id,
         orderId: entity.orderId,
         productId: entity.productId,
         quantity: entity.quantity,
         unitPrice: entity.unitPrice,
-        subtotal: subtotal,
         status: entity.status as ItemOrderStatus,
         notes: entity.notes,
     };
@@ -34,14 +32,9 @@ export function toPersistence(domain: OrderItem): OrderItemEntity {
         product: undefined as any,
         quantity: domain.quantity,
         unitPrice: domain.unitPrice,
-        subtotal: domain.subtotal,
         status: domain.status,
         notes: domain.notes,
     };
 
     return orderItemEntity;
-}
-
-function calculateSubtotal(unitPrice: number, quantity: number): number {
-    return unitPrice * quantity;
 }

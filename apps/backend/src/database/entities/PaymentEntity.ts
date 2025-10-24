@@ -1,4 +1,3 @@
-// PaymentEntity.ts (CORREGIDO)
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { OrderEntity } from "./OrderEntity";
 

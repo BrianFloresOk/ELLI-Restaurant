@@ -36,5 +36,13 @@ export const TableRepository: TableService = {
         const tableEntities = await tableRepository.find({ order: { id: "ASC" }, relations: ["orders.orderItems"] });
         console.log(tableEntities)
         return tableEntities.map(tableMapper.toDomain);
+    },
+
+    async save(data: { capacity: number }): Promise<void> {
+        const newTableEntity = tableRepository.create({
+            capacity: data.capacity,
+            status: "AVAILABLE",
+        });
+        await tableRepository.save(newTableEntity);
     }
 }

@@ -22,6 +22,7 @@ interface InfoDetailOrder {
         product: string;
         quantity: number;
         subtotal?: number;
+        status: string;
     }>;
 }
 
@@ -42,7 +43,8 @@ export async function viewOrderInfoUseCase({ dependencies, orderId }: ViewOrderI
         return {
             product: product?.name || "Producto desconocido",
             quantity: item.quantity,
-            subtotal: product ? product.price * item.quantity : 0
+            subtotal: product ? product.price * item.quantity : 0,
+            status: item.status
         };
     }));
 

@@ -82,16 +82,12 @@ export const OrderRepository: OrderService = {
         const completeItem: OrderItem = {
             ...item,
             unitPrice: productEntity.price,
-            subtotal: item.quantity * productEntity.price,
         };
 
         const newItemEntity = orderItemMapper.toPersistence(completeItem);
         newItemEntity.order = orderEntity;
 
-        const savedItem = await orderItemRepository.save(newItemEntity);
-
-        orderEntity.total = (orderEntity.total || 0) + savedItem.subtotal;
-        await orderRepository.save(orderEntity);
+        await orderItemRepository.save(newItemEntity);
     },
 
     async updateItemQuantity({
@@ -110,15 +106,10 @@ export const OrderRepository: OrderService = {
             throw new Error(`Invalid data: missing unitPrice for OrderItem ID ${itemId}`);
         }
 
-        const oldSubtotal = orderItem.subtotal;
-        const newSubtotal = orderItem.unitPrice * quantity;
-
         orderItem.quantity = quantity;
-        orderItem.subtotal = newSubtotal;
 
         await orderItemRepository.save(orderItem);
 
-        orderEntity.total = (orderEntity.total || 0) + (newSubtotal - oldSubtotal);
         await orderRepository.save(orderEntity);
     },
 
@@ -126,10 +117,7 @@ export const OrderRepository: OrderService = {
         const orderEntity = await findOrderEntity(orderId);
         const orderItem = await findOrderItemEntity(orderEntity.id, itemId);
 
-        orderEntity.total = (orderEntity.total || 0) - orderItem.subtotal;
-
         await orderItemRepository.remove(orderItem);
-        await orderRepository.save(orderEntity);
     },
 
     async listItems(orderId: number): Promise<OrderItem[]> {

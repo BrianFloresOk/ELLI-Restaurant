@@ -3,7 +3,6 @@ import { viewTablesUseCase } from "domain-elli";
 import { TableRepository } from "../../repositories/tableRepository";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { TablesDTO } from "../../utils/DTOs/tablesDto";
-import { tableDetailsMapper } from "../../utils/mappers/tableDetailsMapper";
 
 export const viewAllTables = async (req: Request, res: Response) => {
     try {
@@ -11,7 +10,6 @@ export const viewAllTables = async (req: Request, res: Response) => {
             dependencies: { tableService: TableRepository },
         };
         const tables = await viewTablesUseCase({ dependencies: data.dependencies });
-        //const detailedTables = tables.map((table) => tableDetailsMapper(table));
         const response: TablesDTO = { tables };
         return successResponse({
             res,

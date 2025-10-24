@@ -2,7 +2,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TableEntity } from "./TableEntity";
 import { PaymentEntity } from "./PaymentEntity";
-import { OrderItemEntity } from "./OrderItemEntity"; // Nueva Importación
+import { OrderItemEntity } from "./OrderItemEntity";
 
 @Entity("orders")
 export class OrderEntity {
@@ -24,9 +24,6 @@ export class OrderEntity {
 
     @Column({ nullable: false, type: "varchar", length: 50 })
     status!: string;
-
-    @Column({ nullable: false, type: "decimal", precision: 10, scale: 2 })
-    total!: number;
 
     @Column({ nullable: false, type: "timestamp" })
     orderDate!: Date;
