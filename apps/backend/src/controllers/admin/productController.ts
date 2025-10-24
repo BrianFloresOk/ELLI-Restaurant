@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { ProductRepository } from "../../repositories/productRepository";
-import { CreateProductDto } from "../../utils/dtos/createProductDto";
+import { CreateProductDto } from "../../utils/DTOs/createProductDto";
 import { createProductUseCase, ProductType } from "domain-elli";
 
 export const createProduct = async (req: Request, res: Response) => {

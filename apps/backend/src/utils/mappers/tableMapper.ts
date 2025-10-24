@@ -2,7 +2,7 @@ import { IMapper } from "../../types/IMapper";
 import { Table } from "domain-elli";
 import { TableEntity } from "../../database/entities/TableEntity";
 
-type TableEntityPersistence = Omit<TableEntity, 'orders' | 'reservations'>;
+type TableEntityPersistence = Omit<TableEntity, 'orders' | "reservations">;
 
 export const tableMapper: IMapper<Table, TableEntityPersistence> = {
     toDomain,
@@ -13,7 +13,7 @@ export function toDomain(entity: TableEntity): Table {
     const tableDomain: Table = {
         id: entity.id,
         capacity: entity.capacity,
-        status: entity.status as 'AVAILABLE' | 'OCCUPIED' | 'NEEDS_CLEANING',
+        status: entity.status as 'AVAILABLE' | 'OCCUPIED',
     };
     return tableDomain;
 }

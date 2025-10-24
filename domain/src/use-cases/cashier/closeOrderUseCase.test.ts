@@ -1,105 +1,75 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { OrderService, ProductService, TableService } from "domain/src/services";
 import { closeOrderUseCase } from "./closeOrderUseCase";
-import { Order } from "../../entities/Order";
-import { OrderItem } from "../../entities/OrderItem";
-import { OrderService } from "domain/src/services";
-
-const mockOrderService: OrderService = {
-    save: vi.fn(),
-    findById: vi.fn(),
-    findItemByProduct: vi.fn(),
-    addItem: vi.fn(),
-    updateItemQuantity: vi.fn(),
-    removeItem: vi.fn(),
-    closeOrder: vi.fn(),
-    listItems: vi.fn(),
-    findByStatus: vi.fn(),
-    findByTableId: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-    list: vi.fn(),
-    updateItemStatusByOrder: vi.fn(),
-};
 
 describe("closeOrderUseCase", () => {
-    const dependencies = { orderService: mockOrderService };
+    const mockOrder = {
+        id: 1,
+        tableId: 5,
+        waiterId: 2,
+        status: "OPEN",
+        orderDate: new Date("2025-10-20"),
+        orderItems: [
+            { productId: 10, quantity: 2 },
+            { productId: 20, quantity: 1 },
+        ],
+    };
+
+    const mockProduct1 = { id: 10, name: "Pizza", price: 100 };
+    const mockProduct2 = { id: 20, name: "Soda", price: 50 };
+
+    const orderService = {
+        findById: vi.fn().mockResolvedValue(mockOrder),
+        update: vi.fn().mockResolvedValue(true),
+    };
+
+    const tableService = {
+        update: vi.fn().mockResolvedValue(true),
+    };
+
+    const productService = {
+        findById: vi.fn().mockImplementation(async (id: number) =>
+            id === 10 ? mockProduct1 : mockProduct2
+        ),
+    };
+
+    const makeDependencies = () => ({
+        orderService: orderService as unknown as OrderService,
+        tableService: tableService as unknown as TableService,
+        productService: productService as unknown as ProductService,
+    });
 
     beforeEach(() => {
         vi.clearAllMocks();
-    });
-
-    it("debería cerrar correctamente una orden abierta", async () => {
-        // Arrange
-        const mockOrder: Order = {
-            id: 1,
-            status: "OPEN",
-            total: 0,
-            waiterId: 1,
-            orderDate: new Date(),
-            tableId: 1,
-            orderItems: [
-                { id: 1, subtotal: 100 } as OrderItem,
-                { id: 2, subtotal: 50 } as OrderItem,
-            ],
-        };
-
-        vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
-
-        await closeOrderUseCase({ dependencies, orderId: 1 });
-
-        expect(mockOrderService.findById).toHaveBeenCalledWith(1);
-        expect(mockOrderService.update).toHaveBeenCalledWith(
-            1,
-            expect.objectContaining({
-                status: "CLOSED",
-                total: 150,
-                closedDate: expect.any(Date),
-            })
+        orderService.findById.mockResolvedValue(mockOrder);
+        productService.findById.mockImplementation(async (id: number) =>
+            id === 10 ? mockProduct1 : mockProduct2
         );
     });
 
-    it("debería lanzar error si la orden no existe", async () => {
-        vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(null);
+    it("debería cerrar una orden abierta y calcular el total", async () => {
+        const dependencies = makeDependencies();
+        const result = await closeOrderUseCase({ dependencies, orderId: 1 });
 
-        await expect(
-            closeOrderUseCase({ dependencies, orderId: 999 })
-        ).rejects.toThrow("Orden no encontrada.");
+        expect(orderService.findById).toHaveBeenCalledWith(1);
+        expect(orderService.update).toHaveBeenCalled();
+        expect(tableService.update).toHaveBeenCalledWith(5, { status: "AVAILABLE" });
+        expect(result.total).toBe(250);
+        expect(result.status).toBe("CLOSED");
     });
 
-    it("debería lanzar error si la orden no está en estado OPEN", async () => {
-        const mockOrder: Order = {
-            id: 2,
-            status: "CLOSED",
-            waiterId: 1,
-            orderDate: new Date(),
-            tableId: 1,
-            orderItems: [],
-        };
+    it("debería lanzar un error si la orden no existe", async () => {
+        const dependencies = makeDependencies();
+        orderService.findById.mockResolvedValueOnce(null);
 
-        vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
-
-        await expect(
-            closeOrderUseCase({ dependencies, orderId: 2 })
-        ).rejects.toThrow("Solo se pueden cerrar órdenes en estado OPEN.");
+        await expect(closeOrderUseCase({ dependencies, orderId: 999 })).rejects.toThrow("Orden no encontrada.");
     });
 
-    it("debería calcular total 0 si no hay items", async () => {
-        const mockOrder: Order = {
-            id: 3,
-            status: "OPEN",
-            waiterId: 1,
-            orderDate: new Date(),
-            tableId: 1,
-            orderItems: [],
-        };
+    it("debería lanzar un error si la orden no está en estado OPEN", async () => {
+        const dependencies = makeDependencies();
+        orderService.findById.mockResolvedValueOnce({ ...mockOrder, status: "CLOSED" });
 
-        vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
-
-        await closeOrderUseCase({ dependencies, orderId: 3 });
-
-        expect(mockOrderService.update).toHaveBeenCalledWith(
-            3,
-            expect.objectContaining({ total: 0 })
-        );
+        await expect(closeOrderUseCase({ dependencies, orderId: 1 }))
+            .rejects.toThrow("Solo se pueden cerrar órdenes en estado OPEN.");
     });
 });

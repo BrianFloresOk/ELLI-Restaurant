@@ -8,8 +8,8 @@ interface Dependencies {
 interface CancelOrderInput {
     dependencies: Dependencies
     payload: {
-        orderId: string;
-        userId: string;
+        orderId: number;
+        userId: number;
     }
 }
 

@@ -5,15 +5,14 @@ import { OrderService } from "../../services/orders/OrderService";
 
 describe("cancelOrderUseCase", () => {
     const mockOrder: Order = {
-        id: "order-1",
-        tableId: "T-1",
-        waiterId: "W-1",
+        id: 1,
+        tableId: 1,
+        waiterId: 1,
         status: "OPEN",
-        total: 1000,
-        items: []
+        orderDate: new Date(),
     };
 
-    const mockOrderService: OrderService = {
+    const mockOrderService: Partial<OrderService> = {
         findById: vi.fn().mockResolvedValue(mockOrder),
         save: vi.fn(),
         update: vi.fn(),
@@ -25,19 +24,19 @@ describe("cancelOrderUseCase", () => {
 
     it("cancela un pedido correctamente", async () => {
         const result = await cancelOrderUseCase({
-            dependencies: { orderService: mockOrderService },
-            payload: { orderId: "order-1", userId: "user-1" }
+            dependencies: { orderService: mockOrderService as OrderService },
+            payload: { orderId: 1, userId: 1 }
         });
 
         expect(result.status).toBe("CANCELLED");
-        expect(mockOrderService.update).toHaveBeenCalledWith("order-1", expect.objectContaining({ status: "CANCELLED" }));
+        expect(mockOrderService.update).toHaveBeenCalledWith(1, expect.objectContaining({ status: "CANCELLED" }));
     });
 
     it("lanza error si no se pasa el orderId", async () => {
         await expect(
             cancelOrderUseCase({
-                dependencies: { orderService: mockOrderService },
-                payload: { orderId: "", userId: "user-1" }
+                dependencies: { orderService: mockOrderService as OrderService },
+                payload: { orderId: 0, userId: 1 }
             })
         ).rejects.toThrow("El pedido es requerido.");
     });
@@ -45,14 +44,14 @@ describe("cancelOrderUseCase", () => {
     it("lanza error si no se pasa el userId", async () => {
         await expect(
             cancelOrderUseCase({
-                dependencies: { orderService: mockOrderService },
-                payload: { orderId: "order-1", userId: "" }
+                dependencies: { orderService: mockOrderService as OrderService },
+                payload: { orderId: 1, userId: 0 }
             })
         ).rejects.toThrow("El usuario que cancela el pedido es requerido.");
     });
 
     it("lanza error si el pedido no existe", async () => {
-        const emptyService: OrderService = {
+        const emptyService: Partial<OrderService> = {
             findById: vi.fn().mockResolvedValue(null),
             save: vi.fn(),
             update: vi.fn(),
@@ -64,8 +63,8 @@ describe("cancelOrderUseCase", () => {
 
         await expect(
             cancelOrderUseCase({
-                dependencies: { orderService: emptyService },
-                payload: { orderId: "order-999", userId: "user-1" }
+                dependencies: { orderService: emptyService as OrderService },
+                payload: { orderId: 999, userId: 1 }
             })
         ).rejects.toThrow("No se encontró el pedido");
     });

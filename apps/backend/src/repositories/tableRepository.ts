@@ -30,5 +30,11 @@ export const TableRepository: TableService = {
         };
 
         await tableRepository.update({ id }, updatedEntity);
+    },
+
+    async findAll(): Promise<Table[]> {
+        const tableEntities = await tableRepository.find({ order: { id: "ASC" }, relations: ["orders.orderItems"] });
+        console.log(tableEntities)
+        return tableEntities.map(tableMapper.toDomain);
     }
 }

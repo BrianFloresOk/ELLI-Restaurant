@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreatePaymentDto } from "../../utils/dtos/createPaymentDto";
+import { CreatePaymentDto } from "../../utils/DTOs/createPaymentDto";
 import { Payment, registerPaymentUseCase } from "domain-elli";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { OrderRepository } from "../../repositories/orderRepository";

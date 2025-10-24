@@ -1,6 +1,5 @@
 export * from "./modifyItemInOrderUseCase.js"
 export * from "./cancelOrderUseCase.js"
 export * from "./createOrderUseCase.js"
-export * from "./listOrdersByStatusUseCase.js"
 export * from "./viewOrderInfoUseCase.js"
 export * from "./listAllOrdersUseCase.js"

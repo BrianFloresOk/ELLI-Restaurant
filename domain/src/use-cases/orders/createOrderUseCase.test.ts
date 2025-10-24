@@ -22,14 +22,14 @@ describe("createOrderUseCase", () => {
         updateItemStatusByOrder: vi.fn().mockResolvedValue(undefined),
     };
 
-    const mockTableService: TableService = {
+    const mockTableService: Partial<TableService> = {
         update: vi.fn().mockResolvedValue(undefined),
         findById: vi.fn(),
     };
 
     it("crea un pedido vacío correctamente", async () => {
         await createOrderUseCase({
-            dependencies: { orderService: mockOrderService, tableService: mockTableService },
+            dependencies: { orderService: mockOrderService, tableService: mockTableService as TableService },
             payload: {
                 tableId: 1,
                 waiterId: 123,
@@ -42,7 +42,7 @@ describe("createOrderUseCase", () => {
     it("lanza error si falta el ID de mesa", async () => {
         await expect(
             createOrderUseCase({
-                dependencies: { orderService: mockOrderService, tableService: mockTableService },
+                dependencies: { orderService: mockOrderService, tableService: mockTableService as TableService },
                 // @ts-expect-error: testing invalid input
                 payload: { waiterId: 1 },
             })
@@ -52,7 +52,7 @@ describe("createOrderUseCase", () => {
     it("lanza error si falta el mozo", async () => {
         await expect(
             createOrderUseCase({
-                dependencies: { orderService: mockOrderService, tableService: mockTableService },
+                dependencies: { orderService: mockOrderService, tableService: mockTableService as TableService },
                 // @ts-expect-error: testing invalid input
                 payload: { tableId: 1 },
             })

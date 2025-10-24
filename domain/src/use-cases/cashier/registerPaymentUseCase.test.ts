@@ -44,8 +44,6 @@ describe("registerPaymentUseCase", () => {
             waiterId: 1,
             orderDate: new Date(),
             tableId: 1,
-            total: 200,
-            orderItems: [],
         };
 
         vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
@@ -96,8 +94,6 @@ describe("registerPaymentUseCase", () => {
             waiterId: 1,
             orderDate: new Date(),
             tableId: 1,
-            total: 100,
-            orderItems: [],
         };
 
         vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
@@ -121,8 +117,6 @@ describe("registerPaymentUseCase", () => {
             waiterId: 1,
             orderDate: new Date(),
             tableId: 1,
-            total: 100,
-            orderItems: [],
         };
 
         vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
@@ -146,8 +140,6 @@ describe("registerPaymentUseCase", () => {
             waiterId: 1,
             orderDate: new Date(),
             tableId: 1,
-            total: 100,
-            orderItems: [],
         };
 
         vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);
@@ -171,8 +163,6 @@ describe("registerPaymentUseCase", () => {
             waiterId: 1,
             orderDate: new Date(),
             tableId: 1,
-            total: 100,
-            orderItems: [],
         };
 
         vi.spyOn(mockOrderService, "findById").mockResolvedValueOnce(mockOrder);

@@ -6,7 +6,6 @@ export interface OrderItem extends Entity {
     productId: number;
     quantity: number;
     unitPrice: number;
-    subtotal: number;
     status: ItemOrderStatus
     notes?: string;
 }

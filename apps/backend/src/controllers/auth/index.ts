@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { loginUseCase } from "domain-elli";
 import { tokenManager } from "../../utils/tokenManager";
 import { generateCookie } from "../../utils/generateCookie";
-import { LoginUserDto } from "../../utils/dtos/loginUserDto";
+import { LoginUserDto } from "../../utils/DTOs/loginUserDto";
 
 
 export const login = async (req: Request, res: Response) => {

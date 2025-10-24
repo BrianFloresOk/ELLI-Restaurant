@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
-import { CreateOrderDto, CreateOrderItemDto } from "../../utils/dtos/createOrderDto";
-import { modifyItemInOrderUseCase, createOrderUseCase, listAllOrdersUseCase, sendOrderToKitchenUseCase, viewOrderInfoUseCase, closeOrderUseCase } from "domain-elli";
+import { CreateOrderDto, CreateOrderItemDto } from "../../utils/DTOs/createOrderDto";
+import { 
+    modifyItemInOrderUseCase, 
+    createOrderUseCase, 
+    listAllOrdersUseCase, 
+    sendOrderToKitchenUseCase, 
+    viewOrderInfoUseCase, 
+    closeOrderUseCase 
+} from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
 import { ProductRepository } from "../../repositories/productRepository";
+import { UserRepository } from "../../repositories/userRepository";
 
 export const createOrder = async (req: Request, res: Response) => {
     try {
@@ -115,7 +123,11 @@ export const viewOrderInfo = async (req: Request, res: Response) => {
     try {
         const orderId = parseInt(req.params.orderId);
         const data = {
-            dependencies: { orderService: OrderRepository },
+            dependencies: { 
+                orderService: OrderRepository,
+                userService: UserRepository,
+                productService: ProductRepository
+            },
             orderId
         };
 
@@ -140,7 +152,10 @@ export const closeOrder = async (req: Request, res: Response) => {
     try {
         const orderId = parseInt(req.params.orderId);
         const data = {
-            dependencies: { orderService: OrderRepository },
+            dependencies: { 
+                orderService: OrderRepository,
+                tableService: TableRepository
+            },
             orderId
         };
         const closedOrder = await closeOrderUseCase(data);

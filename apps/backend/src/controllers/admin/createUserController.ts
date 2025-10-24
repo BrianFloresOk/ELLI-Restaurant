@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
-import { CreateUserDto } from "../../utils/dtos/createUserDto";
+import { CreateUserDto } from "../../utils/DTOs/createUserDto";
 import { createUserUseCase, UserRol } from "domain-elli";
 import { passwordManager } from "../../utils/passwordManager";
 import { UserRepository } from "../../repositories/userRepository"

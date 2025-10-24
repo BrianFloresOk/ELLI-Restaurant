@@ -1,49 +1,70 @@
-import { OrderService } from "domain/src/services";
-import { Order } from "../../entities/Order"
-import { OrderItem } from "domain/src/entities";
+import { OrderService, ProductService, TableService } from "domain/src/services";
+import { Order } from "../../entities/Order";
+import { OrderNotFound } from "../../utils/errors/OrderNotFound";
 
 interface Dependencies {
-    orderService: OrderService
+    orderService: OrderService;
+    tableService: TableService;
+    productService: ProductService;
 }
 
 interface CloseOrderInput {
-    dependencies: Dependencies
-    orderId: number
+    dependencies: Dependencies;
+    orderId: number;
 }
 
-export const closeOrderUseCase = async ({ dependencies, orderId }: CloseOrderInput): Promise<void> => {
-    const { orderService } = dependencies;
+interface ClosedOrderInfo {
+    orderNumber: number;
+    tableId: number;
+    waiterId: number;
+    status: string;
+    orderDate: Date;
+    closedDate: Date;
+    total: number;
+}
+
+export const closeOrderUseCase = async ({
+    dependencies,
+    orderId,
+}: CloseOrderInput): Promise<ClosedOrderInfo> => {
+    const { orderService, tableService, productService } = dependencies;
 
     const order = await orderService.findById(orderId);
-    if (!order) {
-        throw new Error("Orden no encontrada.");
-    }
+    if (!order) throw new OrderNotFound("Orden no encontrada.");
 
-    checkStatusOrder(order);
+    ensureOrderIsOpen(order);
 
-    const total = calculateTotal(order.orderItems || []);
-
-    const updatedOrder: Order = updateOrder(order, total);
-
+    const updatedOrder = updateOrder(order);
     await orderService.update(order.id, updatedOrder);
+    await tableService.update(order.tableId, { status: "AVAILABLE" });
+
+    const total = await calculateOrderTotal(order.orderItems || [], productService);
+
+    return {
+        orderNumber: order.id,
+        tableId: order.tableId,
+        waiterId: order.waiterId,
+        status: updatedOrder.status,
+        orderDate: order.orderDate,
+        closedDate: updatedOrder.closedDate!,
+        total,
+    };
 };
 
-function updateOrder(order: Order, total: number): Order {
-    return {
-        ...order,
-        status: "CLOSED",
-        total: total,
-        closedDate: new Date(),
-    };
+async function calculateOrderTotal(orderItems: any[], productService: ProductService): Promise<number> {
+    const subtotals = await Promise.all(
+        orderItems.map(async (item) => {
+            const product = await productService.findById(item.productId);
+            return product ? product.price * item.quantity : 0;
+        })
+    );
+    return subtotals.reduce((sum, s) => sum + s, 0);
 }
 
-function checkStatusOrder(order: Order) {
-    if(order.status !== "OPEN") {
+function ensureOrderIsOpen(order: Order) {
+    if (order.status !== "OPEN") {
         throw new Error("Solo se pueden cerrar órdenes en estado OPEN.");
     }
 }
 
-function calculateTotal(orderItems: OrderItem[]): number {
-    return orderItems.reduce((total, item) => total + item.subtotal, 0);
-}
-
+function updateOrder(order: Order): Order { return { ...order, status: "CLOSED", closedDate: new Date(), }; }

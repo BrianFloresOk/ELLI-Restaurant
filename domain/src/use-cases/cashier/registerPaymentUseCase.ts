@@ -2,6 +2,7 @@ import { PaymentService } from "domain/src/services/payment/PaymentService";
 import { Order } from "../../entities/Order";
 import { Payment } from "../../entities/Payment";
 import { OrderService } from "domain/src/services";
+import { OrderNotFound } from "../../utils/errors/OrderNotFound";
 
 interface Dependencies {
     paymentService: PaymentService;
@@ -28,7 +29,7 @@ export async function registerPaymentUseCase({ dependencies, payload }: Register
 
     const order = await orderService.findById(orderId);
     if (!order) {
-        throw new Error("Orden no encontrada.");
+        throw new OrderNotFound("Orden no encontrada.");
     }
 
     validatePaymentData(order, method, amount, cashierId);
