@@ -16,7 +16,7 @@ export const dataSource = new DataSource({
     password: Config.db.DB_PASSWORD,
     database: Config.db.DB_NAME,
     synchronize: false,
-    logging: true,
+    logging: ["error"],
     entities: [path.join(__dirname, "entities", "**", "*.{ts,js}")],
     migrations: [path.join(__dirname, "migrations", "**", "*.{ts,js}")],
 });

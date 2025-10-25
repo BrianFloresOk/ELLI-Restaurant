@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { OrderEntity } from "./OrderEntity";
 
 
 @Entity("users")
@@ -23,4 +24,10 @@ export class UserEntity {
 
     @Column({ nullable: true, type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt!: Date;
+
+    @OneToMany(() => OrderEntity, order => order.waiter)
+    waiterOrders!: OrderEntity[];
+
+    @OneToMany(() => OrderEntity, order => order.cashier)
+    cashierOrders!: OrderEntity[];
 }

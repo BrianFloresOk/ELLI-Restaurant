@@ -1,8 +1,8 @@
-// OrderEntity.ts (CORREGIDO)
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TableEntity } from "./TableEntity";
 import { PaymentEntity } from "./PaymentEntity";
 import { OrderItemEntity } from "./OrderItemEntity";
+import { UserEntity } from "./UserEntity";
 
 @Entity("orders")
 export class OrderEntity {
@@ -36,4 +36,12 @@ export class OrderEntity {
 
     @OneToOne(() => PaymentEntity, payment => payment.order)
     payment!: PaymentEntity;
+
+    @ManyToOne(() => UserEntity, user => user.waiterOrders)
+    @JoinColumn({ name: "waiterId" })
+    waiter!: UserEntity;
+
+    @ManyToOne(() => UserEntity, user => user.cashierOrders, { nullable: true })
+    @JoinColumn({ name: "cashierId" })
+    cashier?: UserEntity;
 }

@@ -7,8 +7,9 @@
     "dev": "tsx watch src/index.ts",
     "nodemon": "nodemon --watch './src/**/*.ts' --exec 'ts-node' ./src/index.ts",
     "build": "tsc",
-    "db:create": "ts-node src/database/scripts/create-database.ts",
-    "typeorm": "typeorm-ts-node-commonjs",
+    "db:create": "tsx ./src/database/scripts/create-database.ts",
+    "db:seed": "tsx ./src/database/scripts/create-seeders.ts",
+    "typeorm": "tsx ../../node_modules/typeorm/cli.js",
     "migration:generate": "yarn typeorm migration:generate ./src/database/migrations/InitMigration -d ./src/database/data-source.ts",
     "migration:run": "yarn typeorm migration:run -d ./src/database/data-source.ts",
     "migration:revert": "yarn typeorm migration:revert -d ./src/database/data-source.ts"
