@@ -24,6 +24,7 @@ export async function createOrderUseCase({
     payload,
 }: CreateOrderInput): Promise<void> {
     const { orderService, tableService } = dependencies;
+    validateOrderMetadata(payload);
 
     const isTableAvailable = await tableService.verifyTableAvailability(payload.tableId);
 
@@ -31,7 +32,6 @@ export async function createOrderUseCase({
         throw new TableOccupied(`${payload.tableId}`);
     }
 
-    validateOrderMetadata(payload);
 
     const order: OrderCreateData = {
         tableId: payload.tableId,

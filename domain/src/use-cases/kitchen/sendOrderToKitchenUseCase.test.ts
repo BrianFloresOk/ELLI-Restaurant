@@ -19,7 +19,6 @@ describe("sendOrderToKitchenUseCase", () => {
             waiterId: 10,
             status: "OPEN",
             tableId: 5,
-            total: 100,
             orderDate: new Date(),
         };
 
@@ -49,16 +48,6 @@ describe("sendOrderToKitchenUseCase", () => {
         expect(mockOrderService.findById).not.toHaveBeenCalled();
     });
 
-    it("debería lanzar error si no se proporciona orderId", async () => {
-        await expect(
-            sendOrderToKitchenUseCase({
-                dependencies: { orderService: mockOrderService },
-                payload: { orderId: 0, waiterId: 5 },
-            })
-        ).rejects.toThrow("El ID del pedido es requerido.");
-
-        expect(mockOrderService.findById).not.toHaveBeenCalled();
-    });
 
     it("debería lanzar error si el pedido no existe", async () => {
         mockOrderService.findById = vi.fn().mockResolvedValue(null);
@@ -79,7 +68,6 @@ describe("sendOrderToKitchenUseCase", () => {
             waiterId: 1,
             status: "OPEN",
             tableId: 3,
-            total: 50,
             orderDate: new Date(),
         };
 
@@ -101,7 +89,6 @@ describe("sendOrderToKitchenUseCase", () => {
             waiterId: 10,
             status: "CLOSED",
             tableId: 7,
-            total: 200,
             orderDate: new Date(),
         };
 

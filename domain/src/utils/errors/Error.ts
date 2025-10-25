@@ -1,7 +1,11 @@
 export class ErrorDomain extends Error {
     constructor(message: string) {
         super(message);
-        Object.setPrototypeOf(this, ErrorDomain.prototype);
-        this.name = "ErrorDomain";
+        this.name = new.target.name;
+        Object.setPrototypeOf(this, new.target.prototype);
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, this.constructor);
+        }
     }
 }

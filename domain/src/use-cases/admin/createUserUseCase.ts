@@ -35,7 +35,7 @@ export async function createUserUseCase({ dependencies, payload }: CreateUserInp
 
     const user: UserCreateData = {
         name,
-        email: email.toLowerCase(),
+        email: email,
         password: passwordHashed,
         role,
         isActive: true,

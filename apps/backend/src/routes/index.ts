@@ -6,12 +6,14 @@ import authRouter from "./auth";
 import orderRouter from "./orders"
 import paymentRouter from "./payment";
 import tableRouter from "./table";
+import { authenticateToken } from "../middlewares/authenticateToken";
+import { authorizedRol } from "../middlewares/authorizedRol";
 
 router.get("/", (req: Request, res: Response) => {
     res.json("Hello World!");
 });
 
-router.use("/admin", adminRouter);
+router.use("/admin", authenticateToken, authorizedRol(["ADMIN"]), adminRouter);
 
 router.use("/auth", authRouter);
 router.use("/order", orderRouter);

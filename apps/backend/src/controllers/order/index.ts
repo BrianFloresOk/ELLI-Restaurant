@@ -8,12 +8,12 @@ import {
     sendOrderToKitchenUseCase,
     viewOrderInfoUseCase,
     closeOrderUseCase,
+    markOrderItemAsReadyUseCase
 } from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
 import { ProductRepository } from "../../repositories/productRepository";
 import { UserRepository } from "../../repositories/userRepository";
-import { AppError } from "../../utils/errors/AppError";
 
 export const createOrder = async (req: Request, res: Response) => {
     try {
@@ -116,6 +116,32 @@ export const sendOrderToKitchen = async (req: Request, res: Response) => {
         return errorResponse({
             res,
             message: "Error sending order to kitchen",
+            statusCode: 500,
+        });
+    }
+};
+
+export const markOrderAsReady = async (req: Request, res: Response) => {
+    try {
+        const orderId = parseInt(req.params.orderId);
+
+        const data = {
+            dependencies: { orderService: OrderRepository },
+            payload: { orderId }
+        };
+
+        await markOrderItemAsReadyUseCase(data);
+
+        return successResponse({
+            res,
+            message: "Order marked as ready successfully",
+            data: {},
+            statusCode: 200,
+        });
+    } catch (error) {
+        return errorResponse({
+            res,
+            message: "Error marking order as ready",
             statusCode: 500,
         });
     }

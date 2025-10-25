@@ -45,6 +45,7 @@ export async function registerPaymentUseCase({ dependencies, payload }: Register
     const updatedOrder: Order = {
         ...order,
         status: "IS_PAID",
+        cashierId: cashierId,
     };
     await orderService.update(order.id, updatedOrder);
 
