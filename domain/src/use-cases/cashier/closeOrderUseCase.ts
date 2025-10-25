@@ -1,6 +1,6 @@
 import { OrderService, ProductService, TableService } from "domain/src/services";
 import { Order } from "../../entities/Order";
-import { OrderNotFound } from "../../utils/errors/OrderNotFound";
+import { OrderNotFound } from "../../utils/errors/OrderErrors";
 
 interface Dependencies {
     orderService: OrderService;

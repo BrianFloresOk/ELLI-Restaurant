@@ -34,7 +34,6 @@ export const TableRepository: TableService = {
 
     async findAll(): Promise<Table[]> {
         const tableEntities = await tableRepository.find({ order: { id: "ASC" }, relations: ["orders.orderItems"] });
-        console.log(tableEntities)
         return tableEntities.map(tableMapper.toDomain);
     },
 
@@ -44,5 +43,16 @@ export const TableRepository: TableService = {
             status: "AVAILABLE",
         });
         await tableRepository.save(newTableEntity);
+    },
+
+    async verifyTableAvailability(tableId: number): Promise<boolean> {
+        const tableEntity = await tableRepository.findOne({ where: { id: tableId } });
+        if (!tableEntity) throw new NotFoundError("Table not found");
+        if(tableEntity.status === "AVAILABLE") {
+            return true;
+        }
+        return false;
     }
-}
+
+
+};

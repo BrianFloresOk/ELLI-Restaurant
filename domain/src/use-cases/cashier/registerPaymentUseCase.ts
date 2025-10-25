@@ -2,7 +2,7 @@ import { PaymentService } from "domain/src/services/payment/PaymentService";
 import { Order } from "../../entities/Order";
 import { Payment } from "../../entities/Payment";
 import { OrderService } from "domain/src/services";
-import { OrderNotFound } from "../../utils/errors/OrderNotFound";
+import { OrderNotFound } from "../../utils/errors/OrderErrors";
 
 interface Dependencies {
     paymentService: PaymentService;

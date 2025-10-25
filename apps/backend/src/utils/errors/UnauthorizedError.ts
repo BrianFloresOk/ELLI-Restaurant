@@ -1,13 +1,7 @@
-export class UnauthorizedError extends Error {
-    public readonly statusCode: number;
+import { AppError } from "./AppError";
 
+export class UnauthorizedError extends AppError {
     constructor(message: string) {
-        super(message);
-        this.name = "UnauthorizedError";
-        this.statusCode = 401;
-
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, UnauthorizedError);
-        }
+        super(message, 401);
     }
 }

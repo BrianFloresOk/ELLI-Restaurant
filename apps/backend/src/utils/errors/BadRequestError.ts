@@ -1,13 +1,7 @@
-export class BadRequestError extends Error {
-    public readonly statusCode: number;
+import { AppError } from "./AppError";
 
+export class BadRequestError extends AppError {
     constructor(message: string) {
-        super(message);
-        this.name = "BadRequestError";
-        this.statusCode = 400;
-
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, BadRequestError);
-        }
+        super(message, 400);
     }
 }

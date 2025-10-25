@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateOrderDto, CreateOrderItemDto } from "../../utils/DTOs/createOrderDto";
-import { 
-    modifyItemInOrderUseCase, 
-    createOrderUseCase, 
-    listAllOrdersUseCase, 
-    sendOrderToKitchenUseCase, 
-    viewOrderInfoUseCase, 
-    closeOrderUseCase 
+import {
+    modifyItemInOrderUseCase,
+    createOrderUseCase,
+    listAllOrdersUseCase,
+    sendOrderToKitchenUseCase,
+    viewOrderInfoUseCase,
+    closeOrderUseCase,
 } from "domain-elli";
 import { OrderRepository } from "../../repositories/orderRepository";
 import { TableRepository } from "../../repositories/tableRepository";
 import { ProductRepository } from "../../repositories/productRepository";
 import { UserRepository } from "../../repositories/userRepository";
+import { AppError } from "../../utils/errors/AppError";
 
 export const createOrder = async (req: Request, res: Response) => {
     try {
@@ -35,6 +36,7 @@ export const createOrder = async (req: Request, res: Response) => {
             statusCode: 201,
         });
     } catch (error) {
+
         return errorResponse({
             res,
             message: "Error creating order",
@@ -123,7 +125,7 @@ export const viewOrderInfo = async (req: Request, res: Response) => {
     try {
         const orderId = parseInt(req.params.orderId);
         const data = {
-            dependencies: { 
+            dependencies: {
                 orderService: OrderRepository,
                 userService: UserRepository,
                 productService: ProductRepository
@@ -152,7 +154,7 @@ export const closeOrder = async (req: Request, res: Response) => {
     try {
         const orderId = parseInt(req.params.orderId);
         const data = {
-            dependencies: { 
+            dependencies: {
                 orderService: OrderRepository,
                 tableService: TableRepository,
                 productService: ProductRepository

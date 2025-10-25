@@ -1,6 +1,7 @@
-import { TableService } from "domain/src/services";
+import { TableService } from "../../services/table/TableService";
 import { Order } from "../../entities/Order";
 import { OrderService } from "../../services/orders/OrderService";
+import { TableOccupied } from "../../utils/errors/TableErrors";
 
 interface Payload {
     tableId: number;
@@ -23,6 +24,12 @@ export async function createOrderUseCase({
     payload,
 }: CreateOrderInput): Promise<void> {
     const { orderService, tableService } = dependencies;
+
+    const isTableAvailable = await tableService.verifyTableAvailability(payload.tableId);
+
+    if (!isTableAvailable) {
+        throw new TableOccupied(`${payload.tableId}`);
+    }
 
     validateOrderMetadata(payload);
 
