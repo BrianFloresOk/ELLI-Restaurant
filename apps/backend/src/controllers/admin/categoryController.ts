@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CategoryRepository } from "../../repositories/categoryRepository";
-import { viewCategoriesUseCase } from "domain-elli";
+import { createCategoryUseCase, viewCategoriesUseCase } from "domain-elli";
+import { CreateCategoryDto } from "../../utils/DTOs/createCategoryDto";
 
 export const viewAllCategories = async (req: Request, res: Response) => {
     try {
@@ -25,6 +26,34 @@ export const viewAllCategories = async (req: Request, res: Response) => {
         errorResponse({
             res,
             message: "Error fetching categories",
+            statusCode: 500,
+        });
+    }
+}
+
+export const createCategory = async (req: Request, res: Response) => {
+    try {
+        const payload: CreateCategoryDto = req.body;
+
+        const dataInput = {
+            payload,
+            dependencies: {
+                categoryService: CategoryRepository,
+            }
+        }
+
+        await createCategoryUseCase(dataInput);
+
+        return successResponse({
+            res,
+            message: "Category created successfully",
+            statusCode: 201,
+        });
+
+    } catch (error) {
+        errorResponse({
+            res,
+            message: "Error creating category",
             statusCode: 500,
         });
     }

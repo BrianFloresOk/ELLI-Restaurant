@@ -6,6 +6,7 @@ import authRouter from "./auth";
 import orderRouter from "./orders"
 import paymentRouter from "./payment";
 import tableRouter from "./table";
+import productRouter from "./product";
 import { authenticateToken } from "../middlewares/authenticateToken";
 import { authorizedRol } from "../middlewares/authorizedRol";
 
@@ -19,6 +20,7 @@ router.use("/auth", authRouter);
 router.use("/order", orderRouter);
 router.use("/payment", paymentRouter);
 router.use("/table", tableRouter);
+router.use("/product", productRouter);
 
 
 export default router;

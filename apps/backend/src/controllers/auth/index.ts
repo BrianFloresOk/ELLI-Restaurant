@@ -42,3 +42,20 @@ export const login = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        res.clearCookie('access_token');
+        return successResponse({
+            res,
+            message: "Logout successful",
+            statusCode: 200,
+        });
+    } catch (error) {
+        errorResponse({
+            res,
+            message: "Error logging out user",
+            statusCode: 500,
+        });
+    }
+};

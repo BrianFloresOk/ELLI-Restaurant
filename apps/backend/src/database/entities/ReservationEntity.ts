@@ -30,4 +30,7 @@ export class ReservationEntity {
 
     @Column({ nullable: false, type: "varchar", length: 20 })
     status!: string;
+
+    @Column({ nullable: true, type: "int" })
+    tableId?: number;
 }
