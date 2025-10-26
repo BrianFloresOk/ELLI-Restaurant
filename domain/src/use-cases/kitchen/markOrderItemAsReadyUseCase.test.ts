@@ -42,7 +42,7 @@ describe("markOrderItemAsReady", () => {
     expect(orderService.findById).toHaveBeenCalledWith(1);
     expect(orderService.updateItemStatusByOrder).toHaveBeenCalledWith(
       1,
-      "IN_PROCESS",
+      "IN_PROGRESS",
       "COMPLETED"
     );
   });

@@ -20,7 +20,7 @@ describe("createUserUseCase", () => {
     it("debería crear un usuario correctamente con datos válidos", async () => {
         const payload = {
             name: "Juan Pérez",
-            email: "JUAN@MAIL.COM",
+            email: "juan@mail.com",
             password: "12345",
             role: "ADMIN" as UserRol,
         };
@@ -28,7 +28,7 @@ describe("createUserUseCase", () => {
         mockPasswordHasher.hash = vi.fn().mockResolvedValue("hashed_12345");
 
         const now = new Date();
-        vi.setSystemTime(now); // Congelamos la fecha para probar createdAt
+        vi.setSystemTime(now);
 
         await createUserUseCase({
             dependencies: { userService: mockUserService, passwordHasher: mockPasswordHasher },
@@ -69,7 +69,7 @@ describe("createUserUseCase", () => {
             name: "Lucía",
             email: "lucia@mail.com",
             password: "abc123",
-            role: "CHEF" as UserRol, // Rol inválido
+            role: "CHEF" as UserRol,
         };
 
         mockPasswordHasher.hash = vi.fn().mockResolvedValue("hashed_pw");
