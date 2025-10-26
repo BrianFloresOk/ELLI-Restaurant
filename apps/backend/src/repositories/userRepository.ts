@@ -18,17 +18,21 @@ export const UserRepository: UserService = {
         return userEntity ? userMapper.toDomain(userEntity) : null;
     },
 
-    async update(user: User): Promise<void> {
+    async update(id: number, user: User): Promise<void> {
         const userEntity = userMapper.toPersistence(user);
-        await userRepository.save(userEntity);
+        await userRepository.update(id, userEntity);
     },
 
     async deactivate(id: number): Promise<void> {
         await userRepository.update(id, { isActive: false });
     },
 
-    async findByRole(role: string): Promise<User[]> {
-        const userEntities = await userRepository.findBy({ role });
+    async activate(id: number): Promise<void> {
+        await userRepository.update(id, { isActive: true });
+    },
+
+    async find(): Promise<User[]> {
+        const userEntities = await userRepository.find({order: { id: "ASC" }});
         return userEntities.map(userMapper.toDomain);
     },
     
