@@ -3,9 +3,10 @@
   "private": true,
   "workspaces": [
     "domain",
-    "apps/*"
+    "apps/*/*"
   ],
   "scripts": {
+    "dev:frontend": "yarn workspace pos-elli dev",
     "dev:backend": "yarn workspace backend dev",
     "build:backend": "yarn workspace backend build",
     "test:domain": "yarn workspace domain test"

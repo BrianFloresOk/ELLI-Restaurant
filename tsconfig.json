@@ -6,6 +6,9 @@
     },
     {
       "path": "./apps/backend"
+    },
+    {
+      "path": "./apps/frontend/pos-elli"
     }
   ],
   "compilerOptions": {
