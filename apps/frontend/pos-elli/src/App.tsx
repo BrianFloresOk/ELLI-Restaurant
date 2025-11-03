@@ -1,4 +1,5 @@
 import './App.css'
+import { Login } from './pages/Login'
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <p className="font-inter text-gray-700">
         Este texto usa Inter.
       </p>
+      <Login />
     </div>
   )
 }
