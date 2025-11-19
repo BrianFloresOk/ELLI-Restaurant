@@ -8,8 +8,10 @@ const VariableEnv = {
     DB_NAME: process.env.DB_NAME,
     DB_TYPE: process.env.DB_TYPE,
     PORT: process.env.PORT,
-    JWT_SECRET: process.env.JWT_SECRET,
-    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+    JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
+    JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
+    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+    JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
     NODE_ENV: process.env.NODE_ENV,
 } as const;
 
@@ -44,8 +46,14 @@ export const Config = {
     db: configDb,
     server: configServer,
     jwt: {
-        secret: VariableEnv.JWT_SECRET ?? 'your_jwt_secret_key',
-        expiresIn: Number(VariableEnv.JWT_EXPIRES_IN) || 3600,
+        access: {
+            secret: VariableEnv.JWT_ACCESS_SECRET ?? 'default_access_secret',
+            expiresIn: Number(VariableEnv.JWT_ACCESS_EXPIRES_IN) || 3600,
+        },
+        refresh: {
+            secret: VariableEnv.JWT_REFRESH_SECRET ?? 'default_refresh_secret',
+            expiresIn: Number(VariableEnv.JWT_REFRESH_EXPIRES_IN) || 86400,
+        },
     },
     NODE_ENV: VariableEnv.NODE_ENV,
 };

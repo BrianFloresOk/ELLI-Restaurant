@@ -7,6 +7,8 @@ interface InputProps {
     required?: boolean;
     error?: string;
     disabled?: boolean;
+    value?: string | number;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function Input({
@@ -18,6 +20,8 @@ export function Input({
     required = false,
     error,
     disabled = false,
+    onChange,
+    value
 }: InputProps) {
 
     const sizeClasses = {
@@ -43,6 +47,8 @@ export function Input({
                 placeholder={placeholder}
                 required={required}
                 disabled={disabled}
+                onChange={onChange}
+                value={value}
                 className={`
           w-full rounded-md border
           focus:outline-none

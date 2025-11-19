@@ -21,31 +21,54 @@ export const login = async (req: Request, res: Response) => {
             }
         };
 
-        const { token } = await loginUseCase(data);
+        const { accessToken, refreshToken } = await loginUseCase(data);
 
-        generateCookie(res, 'access_token', token);
+        generateCookie(res, 'access_token', accessToken ); // 15 min
+        generateCookie(res, 'refresh_token', refreshToken); // 7 días
 
-        if (token) {
-            return successResponse({
-                res,
-                message: "Login successful",
-                data: token,
-                statusCode: 200,
-            });
-        }
+        return successResponse({
+            res,
+            message: "Login successful",
+            data: { accessToken },
+            statusCode: 200,
+        });
 
     } catch (error) {
         errorResponse({
             res,
-            message: "Error logging in user",
+            message: error instanceof Error ? error.message : "Error logging in user",
             statusCode: 500,
         });
+    }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+    try {
+        const refreshToken = req.cookies.refresh_token;
+        if (!refreshToken) return res.sendStatus(401);
+
+        const payload = await tokenManager.verifyRefresh(refreshToken);
+        if (!payload) return res.sendStatus(403);
+
+        const newAccessToken = await tokenManager.generate(payload);
+        generateCookie(res, 'access_token', newAccessToken);
+
+        return successResponse({
+            res,
+            message: "Access token renewed",
+            data: { accessToken: newAccessToken },
+            statusCode: 200,
+        });
+
+    } catch (error) {
+        errorResponse({ res, message: "Error refreshing token", statusCode: 500 });
     }
 };
 
 export const logout = async (req: Request, res: Response) => {
     try {
         res.clearCookie('access_token');
+        res.clearCookie('refresh_token');
         return successResponse({
             res,
             message: "Logout successful",

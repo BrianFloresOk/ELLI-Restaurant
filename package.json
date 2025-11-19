@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "domain",
-    "apps/*/*"
+    "apps/*/*",
+    "apps/*"
   ],
   "scripts": {
     "dev:frontend": "yarn workspace pos-elli dev",

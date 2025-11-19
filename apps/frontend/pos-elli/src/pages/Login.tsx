@@ -1,7 +1,40 @@
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { useAuthHook } from "../hooks/authHook";
+import { useInputForm } from "../hooks/inputForm";
+
+interface LoginFormState {
+    email: string;
+    password: string;
+}
 
 export default function Login() {
+    const { state, handleChange, reset } = useInputForm<LoginFormState>({
+        email: '',
+        password: ''
+    });
+    const { isAuthenticated, login } = useAuthHook();
+
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            await login(state.email, state.password);
+            if (isAuthenticated) {
+                console.log("User is authenticated, redirecting...");
+                reset()
+            }
+
+            if (!isAuthenticated) {
+                alert("Credenciales inválidas. Por favor, inténtalo de nuevo.");
+                reset()
+            }
+
+        } catch (error) {
+            console.error("Login error:", error);
+        }
+
+    };
+
     return (
         <section className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
             <div className="flex flex-col md:flex-row items-center justify-center gap-12 max-w-6xl w-full">
@@ -32,31 +65,32 @@ export default function Login() {
                         <h1 className="text-3xl font-bold text-white mb-2">Iniciar Sesión</h1>
                     </div>
 
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleLogin} method="POST">
                         <Input
+                            name="email"
                             label="Email"
                             placeholder="usuario@restaurante.com"
                             type="email"
+                            value={state.email}
+                            onChange={handleChange}
                         />
                         <Input
+                            name="password"
                             label="Contraseña"
                             placeholder="••••••••"
                             type="password"
+                            value={state.password}
+                            onChange={handleChange}
                         />
 
                         <Button
-                            onClick={() => { }}
                             variant="primary"
                             size="medium"
                             label="Ingresar al Sistema"
+                            type="submit"
                         />
                     </form>
 
-                    <div className="mt-8 pt-6 border-t border-gray-800 text-center">
-                        <p className="text-gray-500 text-sm">
-                            Sistema seguro • v2.4.1
-                        </p>
-                    </div>
                 </div>
             </div>
         </section>

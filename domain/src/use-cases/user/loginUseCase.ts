@@ -17,7 +17,8 @@ interface LoginInput {
 }
 
 interface Token {
-    token: string
+    accessToken: string;
+    refreshToken: string;
 }
 
 interface PayloadToken { 
@@ -56,7 +57,8 @@ async function validatePassword(passwordHasher: PasswordHasher, password: string
     }
 }
 
-async function generateToken(payloadToken: PayloadToken, tokenGenerator: TokenGenerator): Promise<Token> {
-    const token = await tokenGenerator.generate(payloadToken);
-    return { token };
+async function generateToken(payloadToken: PayloadToken, tokenGenerator: TokenGenerator) {
+    const accessToken = await tokenGenerator.generate(payloadToken);
+    const refreshToken = await (tokenGenerator as any).generateRefresh(payloadToken);
+    return { accessToken, refreshToken };
 }
