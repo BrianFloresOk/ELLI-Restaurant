@@ -1,107 +1,84 @@
-import React from "react";
-import { Button } from ".";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Check, Trash2, ArrowRight } from "lucide-react";
+import Button from ".";
 
 const meta: Meta<typeof Button> = {
     title: "UI/Button",
     component: Button,
     tags: ["autodocs"],
-    parameters: {
-        layout: "centered",
-    },
-    argTypes: {
-        variant: {
-            control: "select",
-            options: ["primary", "secondary", "success", "danger", "disabled"],
-        },
-        size: {
-            control: "select",
-            options: ["small", "medium", "large"],
-        },
+    args: {
+        children: "Button",
     },
 };
 
 export default meta;
+
 type Story = StoryObj<typeof Button>;
 
-// 🔹 Historias base
-export const Primary: Story = {
+export const Default: Story = {};
+
+export const Disabled: Story = {
     args: {
-        label: "Primary",
-        variant: "primary",
+        disabled: true,
+    },
+}
+
+export const Outline: Story = {
+    args: {
+        variant: "outline",
     },
 };
 
 export const Secondary: Story = {
     args: {
-        label: "Secondary",
         variant: "secondary",
+    },
+};
+
+export const Ghost: Story = {
+    args: {
+        variant: "ghost",
+    },
+};
+
+export const Link: Story = {
+    args: {
+        variant: "link",
+    },
+};
+
+export const Accent: Story = {
+    args: {
+        variant: "accent",
     },
 };
 
 export const Success: Story = {
     args: {
-        label: "Success",
         variant: "success",
     },
 };
 
-export const Danger: Story = {
+export const Warning: Story = {
     args: {
-        label: "Delete",
-        variant: "danger",
+        variant: "warning",
     },
 };
 
-export const Disabled: Story = {
-    args: {
-        label: "Disabled",
-        variant: "disabled",
-    },
-};
-
-// 🔹 Tamaños
 export const Small: Story = {
     args: {
-        label: "Small",
-        size: "small",
+        size: "sm",
     },
 };
 
 export const Large: Story = {
     args: {
-        label: "Large",
-        size: "large",
+        size: "lg",
     },
 };
 
-export const WithIconLeft: Story = {
+export const Icon: Story = {
     args: {
-        label: "Save",
-        variant: "success",
-        size: "medium",
-        icon: React.createElement(Check, { size: 18 }),
-        iconPosition: "left",
-    },
-};
-
-export const WithIconRight: Story = {
-    args: {
-        label: "Next",
-        variant: "primary",
-        size: "medium",
-        icon: React.createElement(ArrowRight, { size: 18 }),
-        iconPosition: "right",
-    },
-};
-
-export const DangerWithIcon: Story = {
-    args: {
-        label: "Delete Item",
-        variant: "danger",
-        size: "medium",
-        icon: React.createElement(Trash2, { size: 18 }),
-        iconPosition: "left",
+        size: "icon",
+        children: "★",
     },
 };

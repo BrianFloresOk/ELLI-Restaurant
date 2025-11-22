@@ -1,4 +1,3 @@
-import './App.css'
 import { AppBrowserRouter } from './routes'
 
 function App() {

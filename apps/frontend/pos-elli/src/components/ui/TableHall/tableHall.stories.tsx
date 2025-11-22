@@ -1,35 +1,27 @@
-import { TableHall } from ".";
 import type { Meta, StoryObj } from "@storybook/react";
+import { TableHall } from ".";
+
 
 const meta: Meta<typeof TableHall> = {
-    title: "UI/TableHall",
+    title: "Waiter/TableHall",
     component: TableHall,
-    tags: ["autodocs"],
-    parameters: {
-        layout: "centered",
-    }
 };
 
 export default meta;
+
 type Story = StoryObj<typeof TableHall>;
 
-export const Free: Story = {
+export const Libre: Story = {
     args: {
         number: 1,
-        status: "free",
+        status: "libre",
     },
 };
 
-export const Occupied: Story = {
+export const Ocupada: Story = {
     args: {
-        number: 4,
-        status: "occupied",
-    },
-};
-
-export const Reserved: Story = {
-    args: {
-        number: 7,
-        status: "reserved",
+        number: 5,
+        status: "ocupada",
+        guests: 4,
     },
 };

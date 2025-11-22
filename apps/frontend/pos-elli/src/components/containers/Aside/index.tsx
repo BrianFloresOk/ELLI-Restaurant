@@ -1,37 +1,77 @@
-import { LayoutGrid, Utensils, BookOpen, Wallet, LogOut } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import {
+    LayoutGrid,
+    Utensils,
+    BookOpen,
+    Wallet,
+    LogOut,
+} from "lucide-react";
 
 const menuItems = [
-    { label: "Mesas", icon: <LayoutGrid size={18} /> },
-    { label: "Cocina", icon: <Utensils size={18} /> },
-    { label: "Menú", icon: <BookOpen size={18} /> },
-    { label: "Caja", icon: <Wallet size={18} /> },
+    { label: "Mesas", icon: LayoutGrid, to: "/hall" },
+    { label: "Cocina", icon: Utensils, to: "/kitchen" },
+    { label: "Menú", icon: BookOpen, to: "/menu" },
+    { label: "Caja", icon: Wallet, to: "/cash" },
 ];
 
 export default function Aside() {
     return (
-        <aside className="flex flex-col w-52 h-screen bg-blue-950 text-gray-100 shadow-lg">
-            <div className="p-6 border-b border-blue-800">
-                <h2 className="text-2xl font-semibold tracking-wide text-center">POS Elli</h2>
+        <aside
+            className="
+                flex flex-col
+                w-60 h-screen
+                bg-sidebar-background text-sidebar-foreground
+                border-r border-sidebar-border
+                shadow-elegant
+            "
+        >
+            {/* ---------- HEADER ---------- */}
+            <div className="p-6 border-b border-sidebar-border text-center">
+                <h2 className="text-2xl font-bold tracking-wide text-sidebar-foreground">
+                    POS Elli
+                </h2>
             </div>
 
-            <nav className="flex-1 flex flex-col gap-2 p-4">
-                {menuItems.map(({ label, icon }) => (
-                    <button
+            {/* ---------- NAV MENU ---------- */}
+            <nav className="flex-1 flex flex-col gap-1 p-4">
+                {menuItems.map(({ label, icon: Icon, to }) => (
+                    <NavLink
                         key={label}
-                        className="flex hover:cursor-pointer items-center gap-3 w-full text-left px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors"
+                        to={to}
+                        className={({ isActive }) =>
+                            `
+                            flex items-center gap-3 px-4 py-2.5
+                            rounded-lg text-sm font-medium
+                            transition-all duration-150
+                            
+                            ${isActive
+                                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                : "hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                            }
+                            `
+                        }
                     >
-                        {icon}
+                        <Icon size={18} />
                         <span>{label}</span>
-                    </button>
+                    </NavLink>
                 ))}
             </nav>
-            <div className="p-4 border-t border-blue-800">
-                <button className="flex hover:cursor-pointer items-center gap-3 w-full text-left px-4 py-2 rounded-lg text-gray-300 hover:bg-red-800 hover:text-white transition-colors">
+
+            {/* ---------- LOGOUT ---------- */}
+            <div className="p-4 border-t border-sidebar-border">
+                <button
+                    className="
+                        flex items-center gap-3 w-full px-4 py-2.5
+                        rounded-lg text-sm font-medium
+                        text-sidebar-foreground
+                        hover:bg-destructive hover:text-destructive-foreground
+                        transition-all duration-150
+                    "
+                >
                     <LogOut size={18} />
                     <span>Cerrar sesión</span>
                 </button>
             </div>
-
         </aside>
     );
 }

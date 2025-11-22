@@ -1,69 +1,88 @@
-interface ButtonProps {
-  label: string;
-  icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
-  size?: 'small' | 'medium' | 'large';
-  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'disabled';
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: () => void;
-}
-export const Button = ({
-  label,
-  size = 'medium',
-  variant = 'primary',
-  icon,
-  iconPosition = 'left',
-  onClick,
-}: ButtonProps) => {
-  const baseClasses = `
-    inline-flex items-center justify-center
-    font-semibold rounded-lg shadow-sm
-    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-    transition-all duration-150 ease-in-out
-    disabled:cursor-not-allowed disabled:opacity-70
-    active:scale-[0.97]
-  `;
+import * as React from "react";
 
-  const variantClasses = {
-    primary: `
-      bg-blue-600 text-white hover:bg-blue-700
-      focus-visible:ring-blue-500
-    `,
-    secondary: `
-      bg-gray-100 text-gray-800 border border-gray-300
-      hover:bg-gray-200
-      focus-visible:ring-gray-400
-    `,
-    success: `
-      bg-green-600 text-white hover:bg-green-700
-      focus-visible:ring-green-500
-    `,
-    danger: `
-      bg-red-600 text-white hover:bg-red-700
-      focus-visible:ring-red-500
-    `,
-    disabled: `
-      bg-gray-400 text-white cursor-not-allowed
-    `,
-  };
+// 1. Tipos de Variantes y Tamaños
+type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link"
+  | "accent"
+  | "success"
+  | "warning";
 
-  const sizeClasses = {
-    small: "text-sm px-3 py-1.5 h-9",
-    medium: "text-base px-4 py-2 h-11",
-    large: "text-lg px-5 py-3 h-13",
-  };
+type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-  return (
-    <button
-      onClick={onClick}
-      disabled={variant === "disabled"}
-      className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]}`}
-    >
-      <div className="flex items-center gap-2">
-        {iconPosition === 'left' && icon}
-        <span>{label}</span>
-        {iconPosition === 'right' && icon}
-      </div>
-    </button>
-  );
+// 2. Mapeo de Clases Base
+const BASE_CLASSES =
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50";
+
+// 3. Mapeo de Clases por Variante (Tailwind CSS)
+// Las clases focus-visible se han movido a la lógica principal para aplicarlas consistentemente.
+const VARIANT_MAP: Record<ButtonVariant, string> = {
+  default: "bg-primary text-primary-foreground hover:bg-primary/90",
+  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+  outline: "border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  ghost: "text-foreground hover:bg-accent hover:text-accent-foreground",
+  link: "text-primary underline-offset-4 hover:underline",
+  accent: "bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm",
+  success: "bg-success text-success-foreground hover:bg-success/90 shadow-sm",
+  warning: "bg-warning text-warning-foreground hover:bg-warning/90 shadow-sm",
 };
+
+// 4. Mapeo de Clases por Tamaño
+const SIZE_MAP: Record<ButtonSize, string> = {
+  default: "h-10 px-4 py-2",
+  sm: "h-9 px-3",
+  lg: "h-11 px-8",
+  icon: "h-10 w-10 p-0",
+};
+
+// 5. Definición de Props
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+}
+
+// Función de utilidad simple para unir clases (reemplaza a 'cn')
+const mergeClasses = (...classes: (string | undefined | null | boolean)[]): string => {
+  return classes.filter(Boolean).join(" ");
+};
+
+// 6. El Componente Refactorizado usando React.forwardRef
+// Definimos el componente interno con forwardRef
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({
+    className,
+    variant = "default", // Valor por defecto
+    size = "default",    // Valor por defecto
+    children,
+    ...props
+  }, ref) => {
+    // Clases comunes para el foco
+    const focusClasses = "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring";
+
+    const classes = mergeClasses(
+      BASE_CLASSES,
+      VARIANT_MAP[variant],
+      SIZE_MAP[size],
+      focusClasses,
+      className,
+    );
+
+    return (
+      <button className={classes} ref={ref} {...props}>
+        {children}
+      </button>
+    );
+  }
+);
+
+// Asignamos un display name para facilitar la depuración
+Button.displayName = "Button";
+
+// Exportamos por defecto la función declarada (que es el componente forwardRef)
+export default Button;
