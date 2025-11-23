@@ -7,4 +7,6 @@ type Payload = {
 export interface TokenGenerator {
     generate(payload: Payload): Promise<string>;
     verify(token: string): Promise<Payload | null>;
+    generateRefresh(payload: Payload): Promise<string>;
+    verifyRefresh(token: string): Promise<Payload | null>;
 };

@@ -21,18 +21,18 @@ interface Token {
     refreshToken: string;
 }
 
-interface PayloadToken { 
+interface PayloadToken {
     id: number;
     email: string;
     role: string;
 }
 
-export async function loginUseCase({ dependencies, payload}: LoginInput): Promise<Token> {
+export async function loginUseCase({ dependencies, payload }: LoginInput): Promise<Token> {
     const { email, password } = payload
     const { userService, passwordHasher, tokenGenerator } = dependencies;
     const user = await userService.findByEmail(email)
 
-    if(!user) {
+    if (!user) {
         throw new Error("Account not found.")
     }
 
@@ -59,6 +59,6 @@ async function validatePassword(passwordHasher: PasswordHasher, password: string
 
 async function generateToken(payloadToken: PayloadToken, tokenGenerator: TokenGenerator) {
     const accessToken = await tokenGenerator.generate(payloadToken);
-    const refreshToken = await (tokenGenerator as any).generateRefresh(payloadToken);
+    const refreshToken = await tokenGenerator.generateRefresh(payloadToken);
     return { accessToken, refreshToken };
 }

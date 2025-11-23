@@ -8,7 +8,8 @@ const REFRESH_SECRET = Config.jwt.refresh.secret;
 
 export const tokenManager: TokenGenerator & { generateRefresh: (payload: Payload) => Promise<string>, verifyRefresh: (token: string) => Promise<Payload | null> } = {
     async generate(payload: Payload): Promise<string> {
-        return jwt.sign(payload as object, ACCESS_SECRET, { expiresIn: Config.jwt.access.expiresIn });
+        const cleanData = cleanPayload(payload);
+        return jwt.sign(cleanData, ACCESS_SECRET, { expiresIn: Config.jwt.access.expiresIn });
     },
 
     async verify(token: string): Promise<Payload | null> {
@@ -22,7 +23,8 @@ export const tokenManager: TokenGenerator & { generateRefresh: (payload: Payload
     },
 
     async generateRefresh(payload: Payload): Promise<string> {
-        return jwt.sign(payload as object, REFRESH_SECRET, { expiresIn: Config.jwt.refresh.expiresIn });
+        const cleanData = cleanPayload(payload);
+        return jwt.sign(cleanData, REFRESH_SECRET, { expiresIn: Config.jwt.refresh.expiresIn });
     },
 
     async verifyRefresh(token: string): Promise<Payload | null> {
@@ -33,5 +35,12 @@ export const tokenManager: TokenGenerator & { generateRefresh: (payload: Payload
             if (error instanceof jwt.JsonWebTokenError) return null;
             throw error;
         }
-    }
+    },
+
 };
+
+const cleanPayload = (payload: any): Payload => ({
+    id: payload.id,
+    email: payload.email,
+    role: payload.role,
+});

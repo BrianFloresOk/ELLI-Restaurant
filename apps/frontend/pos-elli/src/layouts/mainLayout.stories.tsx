@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
-import { MainLayout } from "./MainLayout";
+import MainLayout from "./MainLayout";
 import Aside from "../components/containers/Aside";
 import { GridTableHall } from "../components/containers/GridTableHall";
 import { TableHall } from "../components/ui/TableHall";

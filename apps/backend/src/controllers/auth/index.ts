@@ -23,8 +23,11 @@ export const login = async (req: Request, res: Response) => {
 
         const { accessToken, refreshToken } = await loginUseCase(data);
 
-        generateCookie(res, 'access_token', accessToken ); // 15 min
-        generateCookie(res, 'refresh_token', refreshToken); // 7 días
+        const ACCESS_TOKEN_MAX_AGE = 1000 * 60 * 15;
+        const REFRESH_TOKEN_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
+
+        generateCookie(res, 'access_token', accessToken, ACCESS_TOKEN_MAX_AGE);
+        generateCookie(res, 'refresh_token', refreshToken, REFRESH_TOKEN_MAX_AGE);
 
         return successResponse({
             res,
@@ -51,7 +54,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         if (!payload) return res.sendStatus(403);
 
         const newAccessToken = await tokenManager.generate(payload);
-        generateCookie(res, 'access_token', newAccessToken);
+        const ACCESS_TOKEN_MAX_AGE = 1000 * 60 * 15;
+        generateCookie(res, 'access_token', newAccessToken, ACCESS_TOKEN_MAX_AGE);
 
         return successResponse({
             res,
@@ -61,6 +65,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
+        console.error("Error detallado en refreshToken:", error);
         errorResponse({ res, message: "Error refreshing token", statusCode: 500 });
     }
 };

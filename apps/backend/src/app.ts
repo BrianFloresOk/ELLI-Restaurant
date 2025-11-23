@@ -7,11 +7,16 @@ import cookieParser from "cookie-parser";
 
 import indexRouter from "./routes/index";
 import { errorHandler } from "./middlewares/errorHandler";
+import { Config } from "./config/config";
 
 const app = express();
+const CORS_ORIGIN = Config.server.CORS_ORIGIN
 
 
-app.use(cors());
+app.use(cors({
+    origin: CORS_ORIGIN,
+    credentials: true,
+}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

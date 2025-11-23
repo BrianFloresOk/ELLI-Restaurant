@@ -17,7 +17,7 @@ export function GridTableHall({
             <div
                 className={`grid gap-${gap}`}
                 style={{
-                    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
                 }}
             >
                 {children}

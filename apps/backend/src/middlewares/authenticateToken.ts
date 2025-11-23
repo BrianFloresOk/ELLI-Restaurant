@@ -5,7 +5,7 @@ import { Config } from "../config/config";
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.access_token;
-    const secretWord = Config.jwt.secret
+    const secretWord = Config.jwt.access.secret
 
     if (!token) {
         return res.status(401).json({

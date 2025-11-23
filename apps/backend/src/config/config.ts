@@ -13,6 +13,7 @@ const VariableEnv = {
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
     JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
     NODE_ENV: process.env.NODE_ENV,
+    CORS_ORIGIN: process.env.CORS_ORIGIN
 } as const;
 
 
@@ -27,6 +28,7 @@ export interface ConfigDB {
 
 export interface ConfigServer {
     PORT: number;
+    CORS_ORIGIN: string
 }
 
 export const configDb: ConfigDB = {
@@ -40,6 +42,7 @@ export const configDb: ConfigDB = {
 
 export const configServer: ConfigServer = {
     PORT: Number(VariableEnv.PORT) ?? 3000,
+    CORS_ORIGIN: VariableEnv.CORS_ORIGIN || ""
 };
 
 export const Config = {

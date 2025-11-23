@@ -4,7 +4,7 @@ export const API_ROUTES = {
     AUTH: {
         LOGIN: `${BASE}/auth/login`,
         LOGOUT: `${BASE}/auth/logout`,
-        //REFRESH_TOKEN: '/auth/refresh-token',
+        REFRESH_TOKEN: `${BASE}/auth/refresh-token`,
     },
 
     ORDERS: {
@@ -16,4 +16,9 @@ export const API_ROUTES = {
         ORDER_COMPLETED: (orderId: string) => `${BASE}/order/${orderId}/complete`,
         CLOSE_ORDER: (orderId: string) => `${BASE}/order/${orderId}/close`,
     },
+
+    WAITERS: {
+        CATEGORIES: `${BASE}/category`,
+        PRODUCTS: `${BASE}/product`
+    }
 }

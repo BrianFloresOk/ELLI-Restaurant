@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import { MainRoutes } from "./types/MainRoutes"
+import { WaiterRoutes } from "./types/WaiterRoutes"
 
 
 
@@ -16,7 +17,10 @@ export const AppBrowserRouter = () => {
         {
             path: "/",
             element: <RootLayout />,
-            children: MainRoutes
+            children: [
+                ...MainRoutes,
+                ...WaiterRoutes
+            ]
         }
     ])
 
