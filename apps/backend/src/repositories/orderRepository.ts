@@ -60,19 +60,17 @@ export const OrderRepository: OrderService = {
         return entities.map(orderMapper.toDomain);
     },
 
-    async findByTableId(tableId: number): Promise<Order[]> {
-        const entities = await orderRepository.find({
-            where: {
-                table: { id: tableId } as TableEntity
-            },
+    async findByTableId(tableId: number): Promise<Order> {
+        const entities = await orderRepository.findOne({
+            where: { tableId },
             relations: ["table"],
         });
 
-        if (entities.length === 0) {
+        if (!entities) {
             throw new NotFoundError("No orders found for the specified table");
         }
 
-        return entities.map(orderMapper.toDomain);
+        return orderMapper.toDomain(entities)
     },
 
     async addItem(orderId: number, item: OrderItem): Promise<void> {
@@ -120,11 +118,14 @@ export const OrderRepository: OrderService = {
         await orderItemRepository.remove(orderItem);
     },
 
-    async listItems(orderId: number): Promise<OrderItem[]> {
+    async listItems(orderId: number) {
         const items = await orderItemRepository.find({
-            where: { order: { id: orderId } },
+            where: {
+                order: { id: orderId, status: "OPEN" }
+            },
+            relations: ["product"]
         });
-        return items.map(orderItemMapper.toDomain);
+        return items
     },
 
     async findItemByProduct(

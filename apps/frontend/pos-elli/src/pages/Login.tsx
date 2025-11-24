@@ -31,7 +31,7 @@ export default function Login() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/system");
+            navigate("/hall");
         }
     }, [isAuthenticated, navigate]);
 

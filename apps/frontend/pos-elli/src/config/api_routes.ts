@@ -19,6 +19,7 @@ export const API_ROUTES = {
 
     WAITERS: {
         CATEGORIES: `${BASE}/category`,
-        PRODUCTS: `${BASE}/product`
-    }
+        PRODUCTS: `${BASE}/product`,
+        VIEW_TABLES: `${BASE}/table`
+    },
 }

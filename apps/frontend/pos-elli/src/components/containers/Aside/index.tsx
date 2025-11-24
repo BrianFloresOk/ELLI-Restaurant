@@ -35,10 +35,10 @@ const DarkModeToggle = () => {
 };
 
 const menuItems = [
-    { label: "Mesas", icon: LayoutGrid, to: "/system" },
-    { label: "Cocina", icon: Utensils, to: "/system/kitchen" },
-    { label: "Menú", icon: BookOpen, to: "/system/menu" },
-    { label: "Caja", icon: Wallet, to: "/systemcash" },
+    { label: "Mesas", icon: LayoutGrid, to: "/hall" },
+    { label: "Cocina", icon: Utensils, to: "/kitchen" },
+    { label: "Menú", icon: BookOpen, to: "/menu" },
+    { label: "Caja", icon: Wallet, to: "cash" },
 ];
 
 export default function Aside() {

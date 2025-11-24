@@ -19,7 +19,7 @@ export const AppBrowserRouter = () => {
             element: <RootLayout />,
             children: [
                 ...MainRoutes,
-                ...WaiterRoutes
+                ...WaiterRoutes,
             ]
         }
     ])

@@ -73,7 +73,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setAccessToken(token);
 
             const decoded = jwtDecode<PayloadToken>(token);
-            console.log(decoded)
 
             setUser({
                 id: decoded.id,

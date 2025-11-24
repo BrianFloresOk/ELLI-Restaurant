@@ -1,19 +1,25 @@
 import { Users } from "lucide-react";
 import Badge from "../Badge";
+import { useNavigate } from "react-router-dom";
 
 interface TableHallProps {
     number: number;
-    status: "libre" | "ocupada";
+    status: string;
     guests?: number;
     onClick?: () => void;
 }
 
 export function TableHall({ number, status, guests, onClick }: TableHallProps) {
-    const isFree = status === "libre";
+    const isFree = status === "AVAILABLE";
+    const navigate = useNavigate()
+
+    const handleClik = async () => {
+        navigate("/mesa/" + number)
+    }
 
     return (
         <div
-            onClick={onClick}
+            onClick={onClick || handleClik}
             className={`
                 relative cursor-pointer rounded-xl border bg-card
                 shadow-card transition-all duration-200
@@ -37,13 +43,11 @@ export function TableHall({ number, status, guests, onClick }: TableHallProps) {
                     {isFree ? "Libre" : "Ocupada"}
                 </Badge>
 
-                {/* Cantidad de personas */}
-                {!isFree && guests && (
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3">
-                        <Users className="w-4 h-4" />
-                        <span>{guests} personas</span>
-                    </div>
-                )}
+
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3">
+                    <Users className="w-4 h-4" />
+                    <span>{guests} personas</span>
+                </div>
 
                 {/* Mensaje de acción */}
                 <div className="text-xs text-muted-foreground mt-3 text-center">

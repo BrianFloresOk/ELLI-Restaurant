@@ -1,5 +1,5 @@
-import { OrderItem } from "../../entities/OrderItem";
-import { Order } from "../../entities/Order";
+import { OrderItem } from "../../entities/orderItem"
+import { Order } from "../../entities/order";
 
 interface UpdateOrderItemQuantityPayload {
     orderId: number;
@@ -15,11 +15,11 @@ export interface OrderService {
     delete(id: number): Promise<void>;
     closeOrder(orderId: number): Promise<Order>;
     findByStatus(status: string): Promise<Order[]>;
-    findByTableId(tableId: number): Promise<Order[] | null>;
+    findByTableId(tableId: number): Promise<Order | null>;
     addItem(orderId: number, item: Omit<OrderItem, "id" | "orderId">): Promise<void>;
     updateItemQuantity(payload: UpdateOrderItemQuantityPayload): Promise<void>;
     removeItem(orderId: number, itemId: number): Promise<void>;
-    listItems(orderId: number): Promise<OrderItem[]>;
+    listItems(orderId: number): Promise<any>;
     findItemByProduct(orderId: number, productId: number): Promise<OrderItem | null>;
     updateItemStatusByOrder(orderId: number, fromStatus: string, toStatus: string): Promise<void>;
 }

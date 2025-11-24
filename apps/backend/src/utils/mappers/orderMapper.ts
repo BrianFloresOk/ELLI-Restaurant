@@ -43,6 +43,7 @@ function toPersistence(domain: Order): OrderEntity {
         closedDate: domain.closedDate,
         payment: undefined as any,
         orderItems: undefined as any,
+        waiter: undefined as any
     };
     return orderEntity
 }
