@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { modifyItemInOrderUseCase } from "./modifyItemInOrderUseCase";
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 import { Product } from "../../entities/Product";
 
 describe("modifyItemInOrderUseCase", () => {

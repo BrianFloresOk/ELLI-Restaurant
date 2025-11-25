@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { sendOrderToKitchenUseCase } from "./sendOrderToKitchenUseCase";
 import { OrderService } from "../../services/orders/OrderService";
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 
 describe("sendOrderToKitchenUseCase", () => {
     const mockOrderService = {
@@ -21,7 +21,6 @@ describe("sendOrderToKitchenUseCase", () => {
             tableId: 5,
             orderDate: new Date(),
         };
-
         mockOrderService.findById = vi.fn().mockResolvedValue(order);
 
         await sendOrderToKitchenUseCase({

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { cancelOrderUseCase } from "./cancelOrderUseCase";
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 import { OrderService } from "../../services/orders/OrderService";
 
 describe("cancelOrderUseCase", () => {
