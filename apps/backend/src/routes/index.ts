@@ -8,6 +8,7 @@ import paymentRouter from "./payment";
 import tableRouter from "./table";
 import productRouter from "./product";
 import categoryRouter from "./categories";
+import kitchenRouter from "./kitchen"
 import { authenticateToken } from "../middlewares/authenticateToken";
 import { authorizedRol } from "../middlewares/authorizedRol";
 
@@ -23,6 +24,7 @@ router.use("/payment", paymentRouter);
 router.use("/table", tableRouter);
 router.use("/product", productRouter);
 router.use("/category", categoryRouter)
+router.use("/kitchen", kitchenRouter)
 
 
 export default router;

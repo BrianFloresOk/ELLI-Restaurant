@@ -60,17 +60,16 @@ export const OrderRepository: OrderService = {
         return entities.map(orderMapper.toDomain);
     },
 
-    async findByTableId(tableId: number): Promise<Order> {
-        const entities = await orderRepository.findOne({
-            where: { tableId },
+    async findByTableId(tableId: number): Promise<Order | null> {
+        const entity = await orderRepository.findOne({
+            where: { tableId, status: "OPEN"},
             relations: ["table"],
         });
-
-        if (!entities) {
-            throw new NotFoundError("No orders found for the specified table");
+        if (!entity) {
+            return null;
         }
-
-        return orderMapper.toDomain(entities)
+        const order = orderMapper.toDomain(entity);
+        return order;
     },
 
     async addItem(orderId: number, item: OrderItem): Promise<void> {

@@ -19,18 +19,15 @@ export const viewOrderByTableUseCase = async ({ dependencies, payload }: InputUs
     const { tableId } = payload;
 
     const order: Order | null = await orderService.findByTableId(tableId)
-
     if (!order) {
-        throw new Error("No se encontró orden")
+        return null;
     }
 
     const items = await orderService.listItems(order.id)
 
-    console.log(items)
-
     const orderWithDetails = {
         ...order,
-        ...items
+        items
     }
 
     return orderWithDetails
