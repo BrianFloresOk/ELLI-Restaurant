@@ -1,6 +1,6 @@
 import { Utensils, CupSoda } from "lucide-react";
 
-interface Product {
+export interface Product {
     id: number;
     name: string;
     description: string | null;
@@ -12,10 +12,14 @@ interface Product {
 interface ProductListProps {
     products: Product[];
     selectedCategory: number | null;
+    onSelectProduct?: (product: Product) => void;
 }
 
-export default function ProductList({ products, selectedCategory }: ProductListProps) {
-    // Filtrar por categoría si corresponde
+export default function ProductList({
+    products,
+    selectedCategory,
+    onSelectProduct,
+}: ProductListProps) {
     const filteredProducts =
         selectedCategory === null
             ? products
@@ -34,6 +38,7 @@ export default function ProductList({ products, selectedCategory }: ProductListP
             {filteredProducts.map((product) => (
                 <button
                     key={product.id}
+                    onClick={() => onSelectProduct?.(product)}
                     className="
                         bg-card border border-border rounded-2xl p-4
                         shadow-sm hover:shadow-md transition-all duration-200

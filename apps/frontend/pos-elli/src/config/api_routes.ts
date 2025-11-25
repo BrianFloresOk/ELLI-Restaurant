@@ -13,13 +13,22 @@ export const API_ROUTES = {
         GET_DETAILS: (orderId: string) => `${BASE}/order/${orderId}`,
         SEND_TO_KITCHEN: (orderId: string) => `${BASE}/order/${orderId}/send`,
         MODIFY_ORDER: (orderId: string) => `${BASE}/order/${orderId}/items`,
-        ORDER_COMPLETED: (orderId: string) => `${BASE}/order/${orderId}/complete`,
+        ORDER_COMPLETED: (orderId: string) => `${BASE}/order/${orderId}/completed`,
         CLOSE_ORDER: (orderId: string) => `${BASE}/order/${orderId}/close`,
     },
 
     WAITERS: {
         CATEGORIES: `${BASE}/category`,
         PRODUCTS: `${BASE}/product`,
-        VIEW_TABLES: `${BASE}/table`
+        VIEW_TABLES: `${BASE}/table`,
+        GET_DETAILS: (tableId: string) => `${BASE}/table/${tableId}`
     },
+
+    CASHIER: {
+        REGISTER_PAY: `${BASE}/payment/register`
+    },
+
+    KITCHEN: {
+        VIEW_COMANDS: `${BASE}/kitchen`
+    }
 }

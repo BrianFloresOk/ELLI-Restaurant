@@ -7,4 +7,9 @@ export const tableService = {
         const response = await api.get(API_ROUTES.WAITERS.VIEW_TABLES, { withCredentials: true })
         return response.data
     },
+
+    getOrderTable: async (id: string) => {
+        const response = await api.get(API_ROUTES.WAITERS.GET_DETAILS(id), { withCredentials: true })
+        return response.data
+    }
 }

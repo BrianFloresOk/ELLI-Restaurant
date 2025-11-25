@@ -173,10 +173,7 @@ const Kitchen = () => {
 
                 <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                     {active.map(order => {
-                        console.log(order)
-                        console.log(order.status)
                         const cfg = getStatusConfig(order.status);
-                        console.log(cfg)
 
                         return (
                             <Card

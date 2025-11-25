@@ -1,11 +1,13 @@
 import { lazy } from "react";
 import { ProtectedRoute } from "../guards/ProtectedRoutes";
 
+
 const MainLayout = lazy(() => import("../../layouts/MainLayout"))
 const Hall = lazy(() => import("../../pages/Waiter/Hall"))
 const MenuPage = lazy(() => import("../../pages/Waiter/MenuPage"))
-const Kitchen = lazy(() => import("../../pages/Kitchen/Orders"))
+const KitchenView = lazy(() => import("../../pages/Kitchen/KitchenView"))
 const OrderDetail = lazy(() => import("../../pages/Waiter/OrderDetail"))
+const CashierView = lazy(() => import("../../pages/Cashier/CashierPage"))
 
 
 export const WaiterRoutes = [
@@ -27,11 +29,15 @@ export const WaiterRoutes = [
             },
             {
                 path: "kitchen",
-                element: <Kitchen />
+                element: <KitchenView />
             },
             {
                 path: "mesa/:id",
                 element: <OrderDetail />
+            },
+            {
+                path: "cash",
+                element: <CashierView />
             }
         ]
     }
