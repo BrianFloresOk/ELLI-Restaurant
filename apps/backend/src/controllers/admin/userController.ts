@@ -3,12 +3,12 @@ import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CreateUserDto } from "../../utils/DTOs/createUserDto";
 import { passwordManager } from "../../utils/passwordManager";
 import { UserRepository } from "../../repositories/userRepository"
-import { UserRol } from "domain-elli/src/utils/types/UserRol";
 import {
     createUserUseCase,
     viewUserListUseCase,
     activateUserUseCase,
-    deactivateUserUseCase
+    deactivateUserUseCase,
+    UserRol
 } from "domain-elli";
 
 export const createUser = async (req: Request, res: Response) => {

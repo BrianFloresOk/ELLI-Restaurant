@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { viewCategoriesUseCase } from "./viewCategoriesUseCase";
-import { CategoryService } from "domain/src/services";
+import { CategoryService } from "../../services/category/CategoryService";
 
 describe("viewCategoriesUseCase", () => {
     it("debería estar definida", () => {

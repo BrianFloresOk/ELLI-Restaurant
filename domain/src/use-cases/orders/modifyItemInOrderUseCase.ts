@@ -1,4 +1,4 @@
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 import { Product } from "../../entities/Product";
 import { OrderService } from "../../services/orders/OrderService";
 import { ProductService } from "../../services/product/ProductService";

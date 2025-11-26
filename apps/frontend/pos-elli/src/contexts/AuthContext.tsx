@@ -16,6 +16,7 @@ interface AuthContextType {
     user: PayloadToken | null;
     isAuthenticated: boolean;
     loading: boolean;
+    isLoggingIn: boolean;
     error: string | null;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
@@ -27,12 +28,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<PayloadToken | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const isAuthenticated = !!user;
 
     const login = async (email: string, password: string) => {
         setError(null);
+        setIsLoggingIn(true);
         try {
             const resp = await authService.login(email, password);
             if (!resp.success) throw new Error(resp.message || "Login failed");
@@ -47,6 +50,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (err) {
             setError("Login error");
             throw err;
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
@@ -65,7 +70,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const resp = await authService.refresh();
 
-            if (!resp.success) throw new Error(resp.message || "Refresh failed");
+            if (!resp.success) {
+                setAccessToken(null);
+                setUser(null);
+                return;
+            }
 
             const token = resp.data?.accessToken;
 
@@ -88,18 +97,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         (async () => {
-            try {
-                await refresh();
-            } catch {
-                // no session
-            } finally {
-                setLoading(false);
-            }
+            await refresh();
+            setLoading(false);
         })();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, loading, error, login, logout, refresh }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, loading, isLoggingIn, error, login, logout, refresh }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { OrderService, ProductService, TableService } from "domain/src/services";
+
 import { closeOrderUseCase } from "./closeOrderUseCase";
+import { OrderService } from "../../services/orders/OrderService";
+import { TableService } from "../../services/table/TableService";
+import { ProductService } from "../../services/product/ProductService";
 
 describe("closeOrderUseCase", () => {
     const mockOrder = {

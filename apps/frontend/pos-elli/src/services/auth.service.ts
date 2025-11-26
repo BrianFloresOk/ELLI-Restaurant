@@ -18,13 +18,23 @@ export const authService = {
         return response.data;
     },
 
-    refresh: async () => {
-        const response = await api.post<ApiResponse<{ accessToken?: string }>>(
-            API_ROUTES.AUTH.REFRESH_TOKEN,
-            {},
-            { withCredentials: true }
-        );
-        return response.data;
+    refresh: async (): Promise<ApiResponse<{ accessToken?: string }>> => {
+        try {
+            const response = await api.post<ApiResponse<{ accessToken?: string }>>(
+                API_ROUTES.AUTH.REFRESH_TOKEN,
+                {},
+                { withCredentials: true }
+            );
+            return response.data;
+
+        } catch (error) {
+            console.error("Error al intentar refrescar el token:", error);
+            return {
+                success: false,
+                message: "Fallo la validación de la sesión o token expirado.",
+                data: {},
+            };
+        }
     },
 
     logout: async () => {

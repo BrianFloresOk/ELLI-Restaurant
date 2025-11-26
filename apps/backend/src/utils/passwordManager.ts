@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { PasswordHasher } from "domain-elli"
+import { PasswordHasher } from 'domain-elli';
 
 export const passwordManager : PasswordHasher = {
     async hash(password: string): Promise<string> {

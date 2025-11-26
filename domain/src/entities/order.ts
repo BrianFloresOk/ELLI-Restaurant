@@ -1,6 +1,6 @@
 import { Entity } from "../utils/types/Entity"
 import { OrderStatus } from "../utils/types/OrderStatus"
-import { OrderItem } from "./OrderItem"
+import { OrderItem } from "./orderItem"
 
 
 export interface Order extends Entity {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { loginUseCase } from "./loginUseCase";
 import { UserService } from "../../services/users/UserService";
-import { PasswordHasher, TokenGenerator } from "domain/src/utils/types";
+import { PasswordHasher, TokenGenerator } from "../../utils/types";
 import { User } from "../../entities/User";
 
 describe("loginUseCase", () => {

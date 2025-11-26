@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { registerPaymentUseCase } from "./registerPaymentUseCase";
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 import { PaymentService } from "../../services/payment/PaymentService";
 import { OrderService } from "../../services/orders/OrderService";
-import { Payment } from "domain/src/entities";
+import { Payment } from "../../entities/Payment";
 
 
 const mockPaymentService: PaymentService = {

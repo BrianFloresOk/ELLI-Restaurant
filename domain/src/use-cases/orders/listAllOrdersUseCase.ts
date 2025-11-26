@@ -1,5 +1,5 @@
-import { Order } from "domain/src/entities";
-import { OrderService } from "domain/src/services/orders/OrderService";
+import { Order } from "../../entities/order";
+import { OrderService } from "../../services/orders/OrderService";
 
 interface Dependencies {
     orderService: OrderService;

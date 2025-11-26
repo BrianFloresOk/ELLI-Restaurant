@@ -1,4 +1,4 @@
-import { User } from "domain/src/entities"
+import { User } from "../../entities/User"
 import { UserService } from "../../services/users/UserService"
 import { PasswordHasher } from "../../utils/types/PasswordHasher"
 import { UserRol } from "../../utils/types/UserRol"

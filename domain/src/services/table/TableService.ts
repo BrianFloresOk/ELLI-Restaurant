@@ -1,4 +1,4 @@
-import { Table } from "../../entities/Table";
+import { Table } from "../../entities/table";
 
 export interface CreateTableDto {
     capacity: number;

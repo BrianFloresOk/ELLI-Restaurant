@@ -1,5 +1,5 @@
 import { TableService } from "../../services/table/TableService";
-import { Order } from "../../entities/Order";
+import { Order } from "../../entities/order";
 import { OrderService } from "../../services/orders/OrderService";
 import { TableOccupied } from "../../utils/errors/TableErrors";
 

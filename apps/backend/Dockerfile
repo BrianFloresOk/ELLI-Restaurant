@@ -1,13 +1,13 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY . .
+
+WORKDIR /app/apps/backend
 
 RUN yarn install
 
-COPY . .
-
-EXPOSE ${PORT}
+EXPOSE 3000
 
 CMD ["yarn", "dev"]

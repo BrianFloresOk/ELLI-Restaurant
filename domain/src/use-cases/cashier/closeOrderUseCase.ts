@@ -1,5 +1,7 @@
-import { OrderService, ProductService, TableService } from "domain/src/services";
-import { Order } from "../../entities/Order";
+import { OrderService } from "../../services/orders/OrderService";
+import { TableService } from "../../services/table/TableService";
+import { ProductService } from "../../services/product/ProductService";
+import { Order } from "../../entities/order";
 import { OrderNotFound } from "../../utils/errors/OrderErrors";
 
 interface Dependencies {

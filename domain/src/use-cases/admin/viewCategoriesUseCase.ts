@@ -1,4 +1,4 @@
-import { CategoryService } from "domain/src/services";
+import { CategoryService } from "../../services/category/CategoryService";
 
 export interface Dependencies {
     categoryService: CategoryService;

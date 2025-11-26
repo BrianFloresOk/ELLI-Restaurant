@@ -1,7 +1,7 @@
-import { PaymentService } from "domain/src/services/payment/PaymentService";
-import { Order } from "../../entities/Order";
+import { PaymentService } from "../../services/payment/PaymentService";
+import { Order } from "../../entities/order";
 import { Payment } from "../../entities/Payment";
-import { OrderService } from "domain/src/services";
+import { OrderService } from "../../services/orders/OrderService";
 import { OrderNotFound } from "../../utils/errors/OrderErrors";
 
 interface Dependencies {

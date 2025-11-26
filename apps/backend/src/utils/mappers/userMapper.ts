@@ -31,6 +31,8 @@ export function toPersistence(domainUser: User): UserEntity {
         role: domainUser.role.toString(),
         isActive: domainUser.isActive,
         createdAt: domainUser.createdAt,
+        waiterOrders: [],
+        cashierOrders: []
     };
 
     return userEntity;

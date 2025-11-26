@@ -48,6 +48,7 @@ export const login = async (req: Request, res: Response) => {
 export const refreshToken = async (req: Request, res: Response) => {
     try {
         const refreshToken = req.cookies.refresh_token;
+        console.log(refreshToken)
         if (!refreshToken) return res.sendStatus(401);
 
         const payload = await tokenManager.verifyRefresh(refreshToken);
@@ -56,6 +57,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         const newAccessToken = await tokenManager.generate(payload);
         const ACCESS_TOKEN_MAX_AGE = 1000 * 60 * 15;
         generateCookie(res, 'access_token', newAccessToken, ACCESS_TOKEN_MAX_AGE);
+
+        console.log(newAccessToken)
 
         return successResponse({
             res,

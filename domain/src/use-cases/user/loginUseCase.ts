@@ -1,4 +1,4 @@
-import { PasswordHasher, TokenGenerator } from "domain/src/utils/types";
+import { PasswordHasher, TokenGenerator } from "../../utils/types";
 import { User } from "../../entities/User";
 import { UserService } from "../../services/users/UserService";
 

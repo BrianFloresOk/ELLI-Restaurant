@@ -16,7 +16,7 @@ export default function Login() {
         password: "",
     });
 
-    const { login, isAuthenticated, loading, error } = useAuth();
+    const { login, isAuthenticated, error, isLoggingIn } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -34,6 +34,8 @@ export default function Login() {
             navigate("/hall");
         }
     }, [isAuthenticated, navigate]);
+
+    const isButtonDisabled = isLoggingIn;
 
     return (
         <section className="flex items-center justify-center min-h-screen bg-background text-foreground p-6">
@@ -94,8 +96,12 @@ export default function Login() {
                             required
                         />
 
-                        <Button variant="accent" className="w-full cursor-pointer" disabled={loading}>
-                            {loading ? "Ingresando..." : "Login"}
+                        <Button
+                            variant="accent"
+                            className="w-full cursor-pointer"
+                            disabled={isButtonDisabled}
+                        >
+                            {isButtonDisabled ? "Ingresando..." : "Login"}
                         </Button>
 
                         {error && (

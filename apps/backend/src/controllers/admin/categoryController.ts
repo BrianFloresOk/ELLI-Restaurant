@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../../utils/apiResponse";
 import { CategoryRepository } from "../../repositories/categoryRepository";
+import { CreateCategoryDto } from "../../utils/DTOs/createCategoryDto"
 import { createCategoryUseCase, viewCategoriesUseCase } from "domain-elli";
-import { CreateCategoryDto } from "../../utils/DTOs/createCategoryDto";
 
 export const viewAllCategories = async (req: Request, res: Response) => {
     try {

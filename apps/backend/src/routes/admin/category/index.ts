@@ -1,5 +1,5 @@
 import express from "express";
-import { createCategory, viewAllCategories } from "apps/backend/src/controllers/admin/categoryController";
+import { createCategory, viewAllCategories } from "../../../controllers/admin/categoryController"
 
 
 const router = express.Router();
