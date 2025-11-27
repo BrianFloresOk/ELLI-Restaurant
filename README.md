@@ -162,4 +162,5 @@ docker compose up --build
 Para ingresar podes hacerlo con las siguientes credenciales en el Login
 
 email: admin@elli.com
+
 password: admin123
