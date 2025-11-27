@@ -2,12 +2,17 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+COPY package.json yarn.lock ./
+
+COPY apps/backend/package.json apps/backend/package.json
+
+COPY domain/package.json domain/package.json
+
+RUN yarn install
+
 COPY . .
 
 WORKDIR /app/apps/backend
 
-RUN yarn install
-
-EXPOSE 3000
-
+EXPOSE 3500
 CMD ["yarn", "dev"]

@@ -25,7 +25,11 @@ services:
     env_file:
       - ./apps/backend/.env
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT}:3500"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/backend/node_modules
     command: ["yarn", "dev"]
 
   frontend:
@@ -38,7 +42,11 @@ services:
       - ./apps/frontend/pos-elli/.env
     ports:
       - "5173:5173"
-    command: ["yarn", "dev"]
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/frontend/pos-elli/node_modules
+    command: ["yarn", "dev", "--host"]
 
 volumes:
   db_data:

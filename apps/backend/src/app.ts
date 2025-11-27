@@ -11,10 +11,15 @@ import { Config } from "./config/config";
 
 const app = express();
 const CORS_ORIGIN = Config.server.CORS_ORIGIN
+const CORS_PRODUCTION = Config.server.CORS_PRODUCTION
 
+const allowedOrigins = [
+    CORS_ORIGIN,
+    CORS_PRODUCTION,
+];
 
 app.use(cors({
-    origin: CORS_ORIGIN,
+    origin: allowedOrigins,
     credentials: true,
 }));
 app.use(logger("dev"));

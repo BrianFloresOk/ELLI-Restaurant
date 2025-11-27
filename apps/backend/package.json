@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
+    "start": "node dist/index.js",
     "nodemon": "nodemon --watch './src/**/*.ts' --exec 'ts-node' ./src/index.ts",
     "build": "tsc",
     "db:create": "tsx ./src/database/scripts/create-database.ts",
